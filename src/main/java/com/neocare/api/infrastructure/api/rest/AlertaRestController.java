@@ -1,8 +1,8 @@
 package com.neocare.api.infrastructure.api.rest;
 
 import com.neocare.api.application.usecase.alerta.ListarAlertasUseCase;
-import com.neocare.api.domain.model.Alerta;
 import com.neocare.api.interfaces.dto.output.AlertaOutDto;
+import com.neocare.api.interfaces.mapper.AlertaMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +27,7 @@ public class AlertaRestController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<AlertaOutDto>> listarTodos() {
         List<AlertaOutDto> alertas = listarAlertasUseCase.todos().stream()
-                .map(this::toOutDto)
+                .map(AlertaMapper::toOutDto)
                 .toList();
         return ResponseEntity.ok(alertas);
     }
@@ -36,21 +36,9 @@ public class AlertaRestController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<AlertaOutDto>> listarPorUsuario(@PathVariable Long usuarioId) {
         List<AlertaOutDto> alertas = listarAlertasUseCase.porUsuario(usuarioId).stream()
-                .map(this::toOutDto)
+                .map(AlertaMapper::toOutDto)
                 .toList();
         return ResponseEntity.ok(alertas);
     }
 
-    private AlertaOutDto toOutDto(Alerta alerta) {
-        return new AlertaOutDto(
-                alerta.getId(),
-                alerta.getUsuarioId(),
-                alerta.getMedicaoId(),
-                alerta.getTipoAlerta(),
-                alerta.getValorDetectado(),
-                alerta.getSeveridade(),
-                alerta.getMensagem(),
-                alerta.getDataNotificacao()
-        );
-    }
 }

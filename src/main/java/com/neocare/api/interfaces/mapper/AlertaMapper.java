@@ -4,10 +4,24 @@ import com.neocare.api.domain.model.Alerta;
 import com.neocare.api.infrastructure.entity.JpaAlertaEntity;
 import com.neocare.api.infrastructure.entity.JpaMedicaoEntity;
 import com.neocare.api.infrastructure.entity.JpaUsuarioEntity;
+import com.neocare.api.interfaces.dto.output.AlertaOutDto;
 
 public final class AlertaMapper {
 
     private AlertaMapper() {
+    }
+
+    public static AlertaOutDto toOutDto(Alerta alerta) {
+        return new AlertaOutDto(
+                alerta.getId(),
+                alerta.getUsuarioId(),
+                alerta.getMedicaoId(),
+                alerta.getTipoAlerta(),
+                alerta.getValorDetectado(),
+                alerta.getSeveridade(),
+                alerta.getMensagem(),
+                alerta.getDataNotificacao()
+        );
     }
 
     public static JpaAlertaEntity toEntity(Alerta alerta, JpaUsuarioEntity usuarioEntity, JpaMedicaoEntity medicaoEntity) {

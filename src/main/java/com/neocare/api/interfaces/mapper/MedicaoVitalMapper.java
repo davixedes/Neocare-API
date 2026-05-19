@@ -5,12 +5,27 @@ import com.neocare.api.domain.model.MedicaoVital;
 import com.neocare.api.infrastructure.entity.JpaDispositivoEntity;
 import com.neocare.api.infrastructure.entity.JpaMedicaoVitalEntity;
 import com.neocare.api.infrastructure.entity.JpaUsuarioEntity;
+import com.neocare.api.domain.enums.TipoMedicao;
+import com.neocare.api.interfaces.dto.form.MedicaoVitalForm;
 import com.neocare.api.interfaces.dto.input.MedicaoVitalInDto;
 import com.neocare.api.interfaces.dto.output.DispositivoMedicaoOutDto;
 import com.neocare.api.interfaces.dto.output.MedicaoOutDto;
 import com.neocare.api.interfaces.dto.output.MedicaoVitalOutDto;
 
 public final class MedicaoVitalMapper {
+
+    public static MedicaoVital fromForm(MedicaoVitalForm form, Long usuarioId) {
+        return new MedicaoVital(
+                usuarioId,
+                form.getIdDispositivo(),
+                TipoMedicao.MEDICAO_VITAL,
+                form.getBatimentosPorMinuto(),
+                form.getOxigenacaoSangue(),
+                form.getPressaoSistolica(),
+                form.getPressaoDiastolica()
+        );
+    }
+
     public static MedicaoVital toModel(MedicaoVitalInDto medicaoVitalInDto) {
         return new MedicaoVital(
                 medicaoVitalInDto.idUsuario(),

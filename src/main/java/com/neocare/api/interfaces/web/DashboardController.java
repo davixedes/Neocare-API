@@ -7,7 +7,6 @@ import com.neocare.api.application.usecase.usuario.LocalizarTodosOsUsuariosUseCa
 import com.neocare.api.application.usecase.usuario.LocalizarUsuarioPorUsernameUseCase;
 import com.neocare.api.domain.model.Usuario;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,9 +34,7 @@ public class DashboardController {
 
     @GetMapping("/dashboard")
     public String dashboard(Authentication authentication, Model model) {
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .anyMatch("ROLE_ADMIN"::equals);
+        boolean isAdmin = SecurityContextHelper.isAdmin(authentication);
 
         if (isAdmin) {
             model.addAttribute("alertas", listarAlertas.todos());

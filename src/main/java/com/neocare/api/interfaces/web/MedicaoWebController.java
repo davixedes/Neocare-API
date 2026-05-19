@@ -5,12 +5,11 @@ import com.neocare.api.application.usecase.medicao.estresse.RegistrarMedicaoEstr
 import com.neocare.api.application.usecase.medicao.vital.ListarMedicoesVitaisUseCase;
 import com.neocare.api.application.usecase.medicao.vital.RegistrarMedicaoVitalUseCase;
 import com.neocare.api.application.usecase.usuario.LocalizarUsuarioPorUsernameUseCase;
-import com.neocare.api.domain.enums.TipoMedicao;
-import com.neocare.api.domain.model.MedicaoEstresse;
-import com.neocare.api.domain.model.MedicaoVital;
 import com.neocare.api.domain.model.Usuario;
 import com.neocare.api.interfaces.dto.form.MedicaoEstresseForm;
 import com.neocare.api.interfaces.dto.form.MedicaoVitalForm;
+import com.neocare.api.interfaces.mapper.MedicaoEstresseMapper;
+import com.neocare.api.interfaces.mapper.MedicaoVitalMapper;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,12 +76,7 @@ public class MedicaoWebController {
 
         try {
             Usuario usuario = localizarUsuarioPorUsername.execute(authentication.getName());
-            MedicaoEstresse medicao = new MedicaoEstresse(
-                    usuario.getId(), form.getIdDispositivo(),
-                    TipoMedicao.MEDICAO_ESTRESSE,
-                    form.getVariacaoFrequenciaCardiaca(), form.getCondutividadePele()
-            );
-            registrarMedicaoEstresse.execute(medicao);
+            registrarMedicaoEstresse.execute(MedicaoEstresseMapper.fromForm(form, usuario.getId()));
             redirectAttributes.addFlashAttribute("sucesso", "Medição de estresse registrada com sucesso!");
             return "redirect:/medicoes-web";
         } catch (Exception e) {
@@ -110,13 +104,7 @@ public class MedicaoWebController {
 
         try {
             Usuario usuario = localizarUsuarioPorUsername.execute(authentication.getName());
-            MedicaoVital medicao = new MedicaoVital(
-                    usuario.getId(), form.getIdDispositivo(),
-                    TipoMedicao.MEDICAO_VITAL,
-                    form.getBatimentosPorMinuto(), form.getOxigenacaoSangue(),
-                    form.getPressaoSistolica(), form.getPressaoDiastolica()
-            );
-            registrarMedicaoVital.execute(medicao);
+            registrarMedicaoVital.execute(MedicaoVitalMapper.fromForm(form, usuario.getId()));
             redirectAttributes.addFlashAttribute("sucesso", "Medição vital registrada com sucesso!");
             return "redirect:/medicoes-web";
         } catch (Exception e) {

@@ -5,12 +5,25 @@ import com.neocare.api.domain.model.MedicaoEstresse;
 import com.neocare.api.infrastructure.entity.JpaDispositivoEntity;
 import com.neocare.api.infrastructure.entity.JpaMedicaoEstresseEntity;
 import com.neocare.api.infrastructure.entity.JpaUsuarioEntity;
+import com.neocare.api.domain.enums.TipoMedicao;
+import com.neocare.api.interfaces.dto.form.MedicaoEstresseForm;
 import com.neocare.api.interfaces.dto.input.MedicaoEstresseInDto;
 import com.neocare.api.interfaces.dto.output.DispositivoMedicaoOutDto;
 import com.neocare.api.interfaces.dto.output.MedicaoEstresseOutDto;
 import com.neocare.api.interfaces.dto.output.MedicaoOutDto;
 
 public final class MedicaoEstresseMapper {
+
+    public static MedicaoEstresse fromForm(MedicaoEstresseForm form, Long usuarioId) {
+        return new MedicaoEstresse(
+                usuarioId,
+                form.getIdDispositivo(),
+                TipoMedicao.MEDICAO_ESTRESSE,
+                form.getVariacaoFrequenciaCardiaca(),
+                form.getCondutividadePele()
+        );
+    }
+
     public static MedicaoEstresse toModel(MedicaoEstresseInDto medicaoEstresseInDto) {
         return new MedicaoEstresse(
                 medicaoEstresseInDto.idUsuario(),

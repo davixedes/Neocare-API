@@ -1,9 +1,6 @@
 package com.neocare.api.interfaces.dto.form;
 
 import com.neocare.api.domain.enums.Sexo;
-import com.neocare.api.domain.model.Credenciais;
-import com.neocare.api.domain.model.Endereco;
-import com.neocare.api.domain.model.Usuario;
 import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -80,12 +77,6 @@ public class RegistroForm {
     private String password;
 
     public RegistroForm() {
-    }
-
-    public Usuario toDomain() {
-        var endereco = new Endereco(logradouro, bairro, cep, numero, complemento, cidade, uf);
-        var credenciais = new Credenciais(username, password, nome + " " + sobrenome);
-        return new Usuario(nome, sobrenome, cpf, email, telefone, dataNascimento, sexo, altura, peso, endereco, credenciais);
     }
 
     // Getters e Setters

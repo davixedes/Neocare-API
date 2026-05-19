@@ -2,6 +2,7 @@ package com.neocare.api.interfaces.web;
 
 import com.neocare.api.application.usecase.usuario.CriarUsuarioUseCase;
 import com.neocare.api.interfaces.dto.form.RegistroForm;
+import com.neocare.api.interfaces.mapper.UsuarioMapper;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ public class AuthWebController {
         }
 
         try {
-            criarUsuarioUseCase.execute(form.toDomain());
+            criarUsuarioUseCase.execute(UsuarioMapper.fromRegistroForm(form));
             redirectAttributes.addFlashAttribute("sucesso", "Cadastro realizado com sucesso! Faça login.");
             return "redirect:/auth/login";
         } catch (Exception e) {

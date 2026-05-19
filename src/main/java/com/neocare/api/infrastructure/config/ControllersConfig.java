@@ -5,6 +5,7 @@ import com.neocare.api.application.usecase.medicao.estresse.RegistrarMedicaoEstr
 import com.neocare.api.application.usecase.medicao.vital.RegistrarMedicaoVitalUseCase;
 import com.neocare.api.application.usecase.usuario.*;
 import com.neocare.api.infrastructure.security.JwtUtil;
+import com.neocare.api.interfaces.assembler.MedicaoOutputAssembler;
 import com.neocare.api.interfaces.controller.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,13 +27,20 @@ public class ControllersConfig {
     }
 
     @Bean
+    public MedicaoOutputAssembler medicaoOutputAssembler(
+            LocalizarUsuarioPorIdUseCase localizarUsuarioPorIdUseCase,
+            LocalizarDispositivoUseCase localizarDispositivoUseCase) {
+        return new MedicaoOutputAssembler(localizarUsuarioPorIdUseCase, localizarDispositivoUseCase);
+    }
+
+    @Bean
     public MedicaoController medicaoController(
-            RegistrarMedicaoEstresseUseCase registrarMedicaoEstresseUseCase, LocalizarUsuarioPorIdUseCase localizarUsuarioPorIdUseCase,
-            LocalizarDispositivoUseCase localizarDispositivoUseCase, RegistrarMedicaoVitalUseCase registrarMedicaoVitalUseCase
+            RegistrarMedicaoEstresseUseCase registrarMedicaoEstresseUseCase,
+            RegistrarMedicaoVitalUseCase registrarMedicaoVitalUseCase,
+            MedicaoOutputAssembler medicaoOutputAssembler
     ) {
         return new MedicaoControllerImpl(
-                registrarMedicaoEstresseUseCase, localizarDispositivoUseCase,
-                localizarUsuarioPorIdUseCase, registrarMedicaoVitalUseCase
+                registrarMedicaoEstresseUseCase, registrarMedicaoVitalUseCase, medicaoOutputAssembler
         );
     }
 

@@ -4,6 +4,7 @@ import com.neocare.api.domain.model.Credenciais;
 import com.neocare.api.domain.model.Endereco;
 import com.neocare.api.domain.model.Usuario;
 import com.neocare.api.infrastructure.entity.JpaUsuarioEntity;
+import com.neocare.api.interfaces.dto.form.RegistroForm;
 import com.neocare.api.interfaces.dto.input.UsuarioAtualizacaoInputDTO;
 import com.neocare.api.interfaces.dto.input.UsuarioInputDTO;
 import com.neocare.api.interfaces.dto.output.EnderecoOutputDTO;
@@ -13,6 +14,21 @@ import com.neocare.api.interfaces.dto.output.UsuarioResumoOutputDTO;
 public final class UsuarioMapper {
     private UsuarioMapper() {
         super();
+    }
+
+    public static Usuario fromRegistroForm(RegistroForm form) {
+        Endereco endereco = new Endereco(
+                form.getLogradouro(), form.getBairro(), form.getCep(),
+                form.getNumero(), form.getComplemento(), form.getCidade(), form.getUf()
+        );
+        Credenciais credenciais = new Credenciais(
+                form.getUsername(), form.getPassword(), form.getNome() + " " + form.getSobrenome()
+        );
+        return new Usuario(
+                form.getNome(), form.getSobrenome(), form.getCpf(), form.getEmail(),
+                form.getTelefone(), form.getDataNascimento(), form.getSexo(),
+                form.getAltura(), form.getPeso(), endereco, credenciais
+        );
     }
 
     public static Usuario toModel(UsuarioInputDTO dto) {
