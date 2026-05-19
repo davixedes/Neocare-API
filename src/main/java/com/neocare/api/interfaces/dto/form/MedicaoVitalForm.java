@@ -1,7 +1,6 @@
 package com.neocare.api.interfaces.dto.form;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 
 public class MedicaoVitalForm {
 
@@ -9,12 +8,24 @@ public class MedicaoVitalForm {
     @Positive(message = "ID do dispositivo deve ser positivo")
     private Long idDispositivo;
 
+    @NotNull(message = "Batimentos por minuto são obrigatórios")
+    @Min(value = 30, message = "BPM mínimo: 30")
+    @Max(value = 250, message = "BPM máximo: 250")
     private Integer batimentosPorMinuto;
 
+    @NotNull(message = "Oxigenação sanguínea é obrigatória")
+    @DecimalMin(value = "50.0", message = "SpO2 mínimo: 50.0%")
+    @DecimalMax(value = "100.0", message = "SpO2 máximo: 100.0%")
     private Double oxigenacaoSangue;
 
+    @NotNull(message = "Pressão sistólica é obrigatória")
+    @Min(value = 60, message = "Pressão sistólica mínima: 60 mmHg")
+    @Max(value = 300, message = "Pressão sistólica máxima: 300 mmHg")
     private Integer pressaoSistolica;
 
+    @NotNull(message = "Pressão diastólica é obrigatória")
+    @Min(value = 30, message = "Pressão diastólica mínima: 30 mmHg")
+    @Max(value = 180, message = "Pressão diastólica máxima: 180 mmHg")
     private Integer pressaoDiastolica;
 
     public MedicaoVitalForm() {

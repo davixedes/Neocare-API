@@ -5,6 +5,7 @@ import com.neocare.api.interfaces.dto.input.UsuarioAtualizacaoInputDTO;
 import com.neocare.api.interfaces.dto.input.UsuarioInputDTO;
 import com.neocare.api.interfaces.dto.output.UsuarioResumoOutputDTO;
 import com.neocare.api.interfaces.dto.output.UsuarioOutputDTO;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -28,7 +29,7 @@ public class UsuarioRestController {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioOutputDTO> criarUsuario(@RequestBody UsuarioInputDTO usuarioInputDTO, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<UsuarioOutputDTO> criarUsuario(@Valid @RequestBody UsuarioInputDTO usuarioInputDTO, UriComponentsBuilder uriComponentsBuilder) {
         final UsuarioOutputDTO usuarioOutputDTO = usuarioController.criarUsuario(usuarioInputDTO);
         URI uri = uriComponentsBuilder.path("/usuarios/{cpf}").buildAndExpand(usuarioOutputDTO.getCpf()).toUri();
         return ResponseEntity.created(uri).body(usuarioOutputDTO);
@@ -48,7 +49,7 @@ public class UsuarioRestController {
     }
 
     @PutMapping
-    public ResponseEntity<UsuarioOutputDTO> editarUsuario(@RequestBody UsuarioAtualizacaoInputDTO usuarioInputDTO) {
+    public ResponseEntity<UsuarioOutputDTO> editarUsuario(@Valid @RequestBody UsuarioAtualizacaoInputDTO usuarioInputDTO) {
         UsuarioOutputDTO usuarioOutputDTO = this.usuarioController.editarUsuario(usuarioInputDTO);
         return ResponseEntity.ok(usuarioOutputDTO);
     }
