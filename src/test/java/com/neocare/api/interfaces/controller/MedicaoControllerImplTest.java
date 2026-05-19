@@ -1,20 +1,17 @@
 package com.neocare.api.interfaces.controller;
 
-import com.neocare.api.application.usecase.dispositivo.LocalizarDispositivoUseCase;
 import com.neocare.api.application.usecase.medicao.estresse.RegistrarMedicaoEstresseUseCase;
 import com.neocare.api.application.usecase.medicao.vital.RegistrarMedicaoVitalUseCase;
-import com.neocare.api.application.usecase.usuario.LocalizarUsuarioPorIdUseCase;
 import com.neocare.api.domain.enums.TipoDispositivo;
 import com.neocare.api.domain.enums.TipoMedicao;
-import com.neocare.api.domain.model.Dispositivo;
 import com.neocare.api.domain.model.MedicaoEstresse;
 import com.neocare.api.domain.model.MedicaoVital;
-import com.neocare.api.domain.model.Usuario;
-import com.neocare.api.domain.enums.Sexo;
-import com.neocare.api.domain.model.Endereco;
+import com.neocare.api.interfaces.assembler.MedicaoOutputAssembler;
 import com.neocare.api.interfaces.dto.input.MedicaoEstresseInDto;
 import com.neocare.api.interfaces.dto.input.MedicaoVitalInDto;
+import com.neocare.api.interfaces.dto.output.DispositivoMedicaoOutDto;
 import com.neocare.api.interfaces.dto.output.MedicaoEstresseOutDto;
+import com.neocare.api.interfaces.dto.output.MedicaoOutDto;
 import com.neocare.api.interfaces.dto.output.MedicaoVitalOutDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +20,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,29 +34,18 @@ class MedicaoControllerImplTest {
     private RegistrarMedicaoEstresseUseCase registrarMedicaoEstresse;
 
     @Mock
-    private LocalizarDispositivoUseCase localizarDispositivoUseCase;
-
-    @Mock
-    private LocalizarUsuarioPorIdUseCase localizarUsuarioPorIdUseCase;
-
-    @Mock
     private RegistrarMedicaoVitalUseCase registrarMedicaoVitalUseCase;
 
-    private MedicaoControllerImpl controller;
+    @Mock
+    private MedicaoOutputAssembler assembler;
 
-    private Usuario usuario;
-    private Dispositivo dispositivo;
+    private MedicaoControllerImpl controller;
 
     @BeforeEach
     void setUp() {
         controller = new MedicaoControllerImpl(
-                registrarMedicaoEstresse, localizarDispositivoUseCase,
-                localizarUsuarioPorIdUseCase, registrarMedicaoVitalUseCase
+                registrarMedicaoEstresse, registrarMedicaoVitalUseCase, assembler
         );
-        Endereco endereco = new Endereco("Rua Teste", "Bairro", "01234-567", "123", "Apto 1", "SP", "SP");
-        usuario = new Usuario(1L, "João", "Silva", "52857264844", "joao@test.com",
-                "11999999999", LocalDate.of(1990, 1, 1), Sexo.MASCULINO, 175, 80.0, endereco, true);
-        dispositivo = new Dispositivo(1L, TipoDispositivo.ESP32, "A4:CF:12:45:AE:CC");
     }
 
     @Test
@@ -69,9 +54,12 @@ class MedicaoControllerImplTest {
         MedicaoEstresseInDto inDto = new MedicaoEstresseInDto(1L, 1L, TipoMedicao.MEDICAO_ESTRESSE, 50.0, 5.0);
         MedicaoEstresse salva = new MedicaoEstresse(1L, 1L, 1L, LocalDateTime.now(), TipoMedicao.MEDICAO_ESTRESSE, 50.0, 5.0);
 
+        DispositivoMedicaoOutDto dispositivoDto = new DispositivoMedicaoOutDto(1L, TipoDispositivo.ESP32, "A4:CF:12:45:AE:CC", true);
+        MedicaoOutDto medicaoOutDto = new MedicaoOutDto(1L, "João", dispositivoDto, salva.getDataMedicao(), TipoMedicao.MEDICAO_ESTRESSE);
+        MedicaoEstresseOutDto expectedOutDto = new MedicaoEstresseOutDto(50.0, 5.0, medicaoOutDto);
+
         when(registrarMedicaoEstresse.execute(any(MedicaoEstresse.class))).thenReturn(salva);
-        when(localizarUsuarioPorIdUseCase.execute(1L)).thenReturn(usuario);
-        when(localizarDispositivoUseCase.execute(1L)).thenReturn(dispositivo);
+        when(assembler.toEstresseOutDto(salva)).thenReturn(expectedOutDto);
 
         MedicaoEstresseOutDto resultado = controller.registrarMedicaoEstresse(inDto);
 
@@ -82,8 +70,7 @@ class MedicaoControllerImplTest {
         assertEquals("João", resultado.getMedicaoOutDto().getNomeUsuario());
 
         verify(registrarMedicaoEstresse).execute(any(MedicaoEstresse.class));
-        verify(localizarUsuarioPorIdUseCase).execute(1L);
-        verify(localizarDispositivoUseCase).execute(1L);
+        verify(assembler).toEstresseOutDto(salva);
     }
 
     @Test
@@ -92,9 +79,12 @@ class MedicaoControllerImplTest {
         MedicaoVitalInDto inDto = new MedicaoVitalInDto(1L, 1L, TipoMedicao.MEDICAO_VITAL, 80, 98.0, 120, 80);
         MedicaoVital salva = new MedicaoVital(1L, 1L, 1L, LocalDateTime.now(), TipoMedicao.MEDICAO_VITAL, 80, 98.0, 120, 80);
 
+        DispositivoMedicaoOutDto dispositivoDto = new DispositivoMedicaoOutDto(1L, TipoDispositivo.ESP32, "A4:CF:12:45:AE:CC", true);
+        MedicaoOutDto medicaoOutDto = new MedicaoOutDto(1L, "João", dispositivoDto, salva.getDataMedicao(), TipoMedicao.MEDICAO_VITAL);
+        MedicaoVitalOutDto expectedOutDto = new MedicaoVitalOutDto(medicaoOutDto, 80, 98.0, 120, 80, dispositivoDto);
+
         when(registrarMedicaoVitalUseCase.execute(any(MedicaoVital.class))).thenReturn(salva);
-        when(localizarUsuarioPorIdUseCase.execute(1L)).thenReturn(usuario);
-        when(localizarDispositivoUseCase.execute(1L)).thenReturn(dispositivo);
+        when(assembler.toVitalOutDto(salva)).thenReturn(expectedOutDto);
 
         MedicaoVitalOutDto resultado = controller.registrarMedicaoVital(inDto);
 
@@ -106,7 +96,7 @@ class MedicaoControllerImplTest {
         assertNotNull(resultado.medicaoOutDto());
 
         verify(registrarMedicaoVitalUseCase).execute(any(MedicaoVital.class));
-        verify(localizarUsuarioPorIdUseCase).execute(1L);
-        verify(localizarDispositivoUseCase).execute(1L);
+        verify(assembler).toVitalOutDto(salva);
+
     }
 }
