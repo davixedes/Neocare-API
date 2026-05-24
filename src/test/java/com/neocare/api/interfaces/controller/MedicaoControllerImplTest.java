@@ -1,5 +1,6 @@
 package com.neocare.api.interfaces.controller;
 
+import com.neocare.api.application.usecase.predicao.AnalisarMedicaoUseCase;
 import com.neocare.api.application.usecase.medicao.estresse.RegistrarMedicaoEstresseUseCase;
 import com.neocare.api.application.usecase.medicao.vital.RegistrarMedicaoVitalUseCase;
 import com.neocare.api.domain.enums.TipoDispositivo;
@@ -21,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,6 +39,9 @@ class MedicaoControllerImplTest {
     private RegistrarMedicaoVitalUseCase registrarMedicaoVitalUseCase;
 
     @Mock
+    private AnalisarMedicaoUseCase analisarMedicaoUseCase;
+
+    @Mock
     private MedicaoOutputAssembler assembler;
 
     private MedicaoControllerImpl controller;
@@ -44,7 +49,7 @@ class MedicaoControllerImplTest {
     @BeforeEach
     void setUp() {
         controller = new MedicaoControllerImpl(
-                registrarMedicaoEstresse, registrarMedicaoVitalUseCase, assembler
+                registrarMedicaoEstresse, registrarMedicaoVitalUseCase, analisarMedicaoUseCase, assembler
         );
     }
 
@@ -56,10 +61,11 @@ class MedicaoControllerImplTest {
 
         DispositivoMedicaoOutDto dispositivoDto = new DispositivoMedicaoOutDto(1L, TipoDispositivo.ESP32, "A4:CF:12:45:AE:CC", true);
         MedicaoOutDto medicaoOutDto = new MedicaoOutDto(1L, "João", dispositivoDto, salva.getDataMedicao(), TipoMedicao.MEDICAO_ESTRESSE);
-        MedicaoEstresseOutDto expectedOutDto = new MedicaoEstresseOutDto(50.0, 5.0, medicaoOutDto);
+        MedicaoEstresseOutDto expectedOutDto = new MedicaoEstresseOutDto(50.0, 5.0, medicaoOutDto, null);
 
         when(registrarMedicaoEstresse.execute(any(MedicaoEstresse.class))).thenReturn(salva);
-        when(assembler.toEstresseOutDto(salva)).thenReturn(expectedOutDto);
+        when(analisarMedicaoUseCase.executarParaEstresse(salva)).thenReturn(Optional.empty());
+        when(assembler.toEstresseOutDto(salva, null)).thenReturn(expectedOutDto);
 
         MedicaoEstresseOutDto resultado = controller.registrarMedicaoEstresse(inDto);
 
@@ -70,7 +76,8 @@ class MedicaoControllerImplTest {
         assertEquals("João", resultado.getMedicaoOutDto().getNomeUsuario());
 
         verify(registrarMedicaoEstresse).execute(any(MedicaoEstresse.class));
-        verify(assembler).toEstresseOutDto(salva);
+        verify(analisarMedicaoUseCase).executarParaEstresse(salva);
+        verify(assembler).toEstresseOutDto(salva, null);
     }
 
     @Test
@@ -81,10 +88,11 @@ class MedicaoControllerImplTest {
 
         DispositivoMedicaoOutDto dispositivoDto = new DispositivoMedicaoOutDto(1L, TipoDispositivo.ESP32, "A4:CF:12:45:AE:CC", true);
         MedicaoOutDto medicaoOutDto = new MedicaoOutDto(1L, "João", dispositivoDto, salva.getDataMedicao(), TipoMedicao.MEDICAO_VITAL);
-        MedicaoVitalOutDto expectedOutDto = new MedicaoVitalOutDto(medicaoOutDto, 80, 98.0, 120, 80, dispositivoDto);
+        MedicaoVitalOutDto expectedOutDto = new MedicaoVitalOutDto(medicaoOutDto, 80, 98.0, 120, 80, dispositivoDto, null);
 
         when(registrarMedicaoVitalUseCase.execute(any(MedicaoVital.class))).thenReturn(salva);
-        when(assembler.toVitalOutDto(salva)).thenReturn(expectedOutDto);
+        when(analisarMedicaoUseCase.executarParaVital(salva)).thenReturn(Optional.empty());
+        when(assembler.toVitalOutDto(salva, null)).thenReturn(expectedOutDto);
 
         MedicaoVitalOutDto resultado = controller.registrarMedicaoVital(inDto);
 
@@ -96,7 +104,8 @@ class MedicaoControllerImplTest {
         assertNotNull(resultado.medicaoOutDto());
 
         verify(registrarMedicaoVitalUseCase).execute(any(MedicaoVital.class));
-        verify(assembler).toVitalOutDto(salva);
+        verify(analisarMedicaoUseCase).executarParaVital(salva);
+        verify(assembler).toVitalOutDto(salva, null);
 
     }
 }

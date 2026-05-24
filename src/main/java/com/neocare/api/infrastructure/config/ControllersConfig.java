@@ -1,6 +1,7 @@
 package com.neocare.api.infrastructure.config;
 
 import com.neocare.api.application.usecase.dispositivo.LocalizarDispositivoUseCase;
+import com.neocare.api.application.usecase.predicao.AnalisarMedicaoUseCase;
 import com.neocare.api.application.usecase.medicao.estresse.RegistrarMedicaoEstresseUseCase;
 import com.neocare.api.application.usecase.medicao.vital.RegistrarMedicaoVitalUseCase;
 import com.neocare.api.application.usecase.usuario.*;
@@ -37,10 +38,12 @@ public class ControllersConfig {
     public MedicaoController medicaoController(
             RegistrarMedicaoEstresseUseCase registrarMedicaoEstresseUseCase,
             RegistrarMedicaoVitalUseCase registrarMedicaoVitalUseCase,
+            AnalisarMedicaoUseCase analisarMedicaoUseCase,
             MedicaoOutputAssembler medicaoOutputAssembler
     ) {
         return new MedicaoControllerImpl(
-                registrarMedicaoEstresseUseCase, registrarMedicaoVitalUseCase, medicaoOutputAssembler
+                registrarMedicaoEstresseUseCase, registrarMedicaoVitalUseCase,
+                analisarMedicaoUseCase, medicaoOutputAssembler
         );
     }
 

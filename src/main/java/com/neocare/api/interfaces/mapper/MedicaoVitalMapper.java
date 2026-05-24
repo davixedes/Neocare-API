@@ -11,6 +11,7 @@ import com.neocare.api.interfaces.dto.input.MedicaoVitalInDto;
 import com.neocare.api.interfaces.dto.output.DispositivoMedicaoOutDto;
 import com.neocare.api.interfaces.dto.output.MedicaoOutDto;
 import com.neocare.api.interfaces.dto.output.MedicaoVitalOutDto;
+import com.neocare.api.interfaces.dto.output.ResultadoPredicaoOutDto;
 
 public final class MedicaoVitalMapper {
 
@@ -38,7 +39,9 @@ public final class MedicaoVitalMapper {
         );
     }
 
-    public static MedicaoVitalOutDto toOutDto(MedicaoVital registeredMedicaoVital, String nomeUsuario, Dispositivo dispositivo, Long idDispositivo) {
+    public static MedicaoVitalOutDto toOutDto(MedicaoVital registeredMedicaoVital, String nomeUsuario,
+                                               Dispositivo dispositivo, Long idDispositivo,
+                                               ResultadoPredicaoOutDto resultadoPredicao) {
         DispositivoMedicaoOutDto dispositivoMedicaoOutDto = new DispositivoMedicaoOutDto(
                 idDispositivo,
                 dispositivo.getTipoDispositivo(),
@@ -60,7 +63,8 @@ public final class MedicaoVitalMapper {
                 registeredMedicaoVital.getOxigenacaoSangue(),
                 registeredMedicaoVital.getPressaoSistolica(),
                 registeredMedicaoVital.getPressaoDiastolica(),
-                dispositivoMedicaoOutDto
+                dispositivoMedicaoOutDto,
+                resultadoPredicao
         );
     }
 

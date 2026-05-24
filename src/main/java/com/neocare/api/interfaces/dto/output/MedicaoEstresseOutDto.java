@@ -4,11 +4,14 @@ public class MedicaoEstresseOutDto {
     private Double variacaoFrequenciaCardiaca;
     private Double condutividadePele;
     private MedicaoOutDto medicaoOutDto;
+    private ResultadoPredicaoOutDto resultadoPredicao;
 
-    public MedicaoEstresseOutDto(Double variacaoFrequenciaCardiaca, Double condutividadePele, MedicaoOutDto medicaoOutDto) {
+    public MedicaoEstresseOutDto(Double variacaoFrequenciaCardiaca, Double condutividadePele,
+                                 MedicaoOutDto medicaoOutDto, ResultadoPredicaoOutDto resultadoPredicao) {
         this.variacaoFrequenciaCardiaca = variacaoFrequenciaCardiaca;
         this.condutividadePele = condutividadePele;
         this.medicaoOutDto = medicaoOutDto;
+        this.resultadoPredicao = resultadoPredicao;
     }
 
     public Double getVariacaoFrequenciaCardiaca() {
@@ -33,5 +36,13 @@ public class MedicaoEstresseOutDto {
 
     public void setMedicaoOutDto(MedicaoOutDto medicaoOutDto) {
         this.medicaoOutDto = medicaoOutDto;
+    }
+
+    public ResultadoPredicaoOutDto getResultadoPredicao() {
+        return resultadoPredicao;
+    }
+
+    public void setResultadoPredicao(ResultadoPredicaoOutDto resultadoPredicao) {
+        this.resultadoPredicao = resultadoPredicao;
     }
 }

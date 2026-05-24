@@ -6,6 +6,7 @@ public record MedicaoVitalOutDto(
         Double oxigenacaoSangue,
         Integer pressaoSistolica,
         Integer pressaoDiastolica,
-        DispositivoMedicaoOutDto dispositivoMedicaoOutDto
+        DispositivoMedicaoOutDto dispositivoMedicaoOutDto,
+        ResultadoPredicaoOutDto resultadoPredicao
 ) {
 }

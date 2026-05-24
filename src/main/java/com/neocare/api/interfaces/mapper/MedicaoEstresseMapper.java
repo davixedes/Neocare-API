@@ -11,6 +11,7 @@ import com.neocare.api.interfaces.dto.input.MedicaoEstresseInDto;
 import com.neocare.api.interfaces.dto.output.DispositivoMedicaoOutDto;
 import com.neocare.api.interfaces.dto.output.MedicaoEstresseOutDto;
 import com.neocare.api.interfaces.dto.output.MedicaoOutDto;
+import com.neocare.api.interfaces.dto.output.ResultadoPredicaoOutDto;
 
 public final class MedicaoEstresseMapper {
 
@@ -34,7 +35,9 @@ public final class MedicaoEstresseMapper {
         );
     }
 
-    public static MedicaoEstresseOutDto toOutDto(MedicaoEstresse registeredMedicaoEstresse, String nomeUsuario, Dispositivo dispositivo, Long idDispositivo) {
+    public static MedicaoEstresseOutDto toOutDto(MedicaoEstresse registeredMedicaoEstresse, String nomeUsuario,
+                                                  Dispositivo dispositivo, Long idDispositivo,
+                                                  ResultadoPredicaoOutDto resultadoPredicao) {
         DispositivoMedicaoOutDto dispositivoMedicaoOutDto = new DispositivoMedicaoOutDto(
                 idDispositivo,
                 dispositivo.getTipoDispositivo(),
@@ -53,7 +56,8 @@ public final class MedicaoEstresseMapper {
         return new MedicaoEstresseOutDto(
                 registeredMedicaoEstresse.getVariacaoFrequenciaCardiaca(),
                 registeredMedicaoEstresse.getCondutividadePele(),
-                medicaoOutDto
+                medicaoOutDto,
+                resultadoPredicao
         );
     }
 
