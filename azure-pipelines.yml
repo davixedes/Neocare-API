@@ -1,0 +1,207 @@
+
+#  CI : checkout -> setup JDK 17 -> mvn test -> mvn package -> docker build/push
+#  CD : update Azure Container App com a nova imagem do ACR
+#
+#  Variaveis SECRETAS (cadastrar em Pipelines > Edit > Variables):
+#    ACR_USERNAME             - usuario do ACR (admin)
+#    ACR_PASSWORD             - senha do ACR
+#    AZURE_CLIENT_ID          - App Registration (service principal)
+#    AZURE_CLIENT_SECRET      - secret do service principal
+#    AZURE_TENANT_ID          - tenant Azure
+#    AZURE_SUBSCRIPTION_ID    - id da assinatura
+#    DD_API_KEY               - chave do Datadog (runtime)
+#    SPRING_DATASOURCE_PASSWORD - senha do PostgreSQL
+
+
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+variables:
+  # ---- imagem / registry ----
+  acrName: 'neocareapi'
+  acrLoginServer: 'neocareapi.azurecr.io'
+  imageRepository: 'neocare-api'
+  imageTag: '$(Build.BuildId)'
+  dockerfilePath: 'src/main/docker/Dockerfile'
+
+  # ---- azure / container app ----
+  resourceGroup: 'neocare'
+  containerAppName: 'neocare-api'
+  containerAppEnv: 'neocare-env'
+
+  # ---- build ----
+  mavenPomFile: 'pom.xml'
+  javaVersion: '17'
+
+  # ---- datasource ----
+  springDatasourceUrl: 'jdbc:postgresql://neocare-database.postgres.database.azure.com:5432/neocare?sslmode=require'
+  springDatasourceUsername: 'neocare_admin'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+
+# STAGE 1 - CI : compila, roda testes e publica imagem no ACR
+
+- stage: CI
+  displayName: 'CI - Build, Test & Push'
+  jobs:
+    - job: BuildTestPush
+      displayName: 'Maven build + Docker push'
+      steps:
+
+        - checkout: self
+          displayName: 'Checkout do repositorio'
+
+        - task: JavaToolInstaller@0
+          displayName: 'Instalar JDK $(javaVersion)'
+          inputs:
+            versionSpec: '$(javaVersion)'
+            jdkArchitectureOption: 'x64'
+            jdkSourceOption: 'PreInstalled'
+
+        - task: Cache@2
+          displayName: 'Cache de dependencias Maven'
+          inputs:
+            key: 'maven | "$(Agent.OS)" | **/pom.xml'
+            restoreKeys: |
+              maven | "$(Agent.OS)"
+              maven
+            path: $(HOME)/.m2/repository
+
+        - script: |
+            docker run -d \
+              --name neocare-postgres-ci \
+              -e POSTGRES_USER=postgres \
+              -e POSTGRES_PASSWORD=123456 \
+              -e POSTGRES_DB=neocare \
+              -p 5432:5432 \
+              postgres:16-alpine
+
+            echo "Aguardando Postgres ficar pronto..."
+            for i in $(seq 1 30); do
+              if docker exec neocare-postgres-ci pg_isready -U postgres -d neocare > /dev/null 2>&1; then
+                echo "Postgres pronto apos ${i}s"
+                exit 0
+              fi
+              sleep 1
+            done
+            echo "Postgres nao ficou pronto em 30s"
+            docker logs neocare-postgres-ci
+            exit 1
+          displayName: 'Subir Postgres (sidecar para testes)'
+
+        - task: Maven@4
+          displayName: 'Rodar testes unitarios (mvn test)'
+          inputs:
+            mavenPomFile: '$(mavenPomFile)'
+            goals: 'test'
+            options: '-B'
+            publishJUnitResults: true
+            testResultsFiles: '**/surefire-reports/TEST-*.xml'
+            javaHomeOption: 'JDKVersion'
+            jdkVersionOption: '1.$(javaVersion)'
+
+        - script: |
+            docker stop neocare-postgres-ci || true
+            docker rm   neocare-postgres-ci || true
+          displayName: 'Parar Postgres (cleanup)'
+          condition: always()
+
+        - task: Maven@4
+          displayName: 'Empacotar aplicacao (mvn package)'
+          inputs:
+            mavenPomFile: '$(mavenPomFile)'
+            goals: 'package'
+            options: '-B -DskipTests'
+            javaHomeOption: 'JDKVersion'
+            jdkVersionOption: '1.$(javaVersion)'
+
+        - script: |
+            echo "$(ACR_PASSWORD)" | docker login $(acrLoginServer) \
+              -u "$(ACR_USERNAME)" --password-stdin
+          displayName: 'Login no Azure Container Registry'
+          env:
+            ACR_USERNAME: $(ACR_USERNAME)
+            ACR_PASSWORD: $(ACR_PASSWORD)
+
+        - script: |
+            docker buildx build \
+              --platform linux/amd64 \
+              -t $(acrLoginServer)/$(imageRepository):$(imageTag) \
+              -t $(acrLoginServer)/$(imageRepository):latest \
+              -f $(dockerfilePath) \
+              --push \
+              .
+          displayName: 'Build & push da imagem Docker no ACR'
+
+        - script: |
+            echo "Imagem publicada: $(acrLoginServer)/$(imageRepository):$(imageTag)"
+          displayName: 'Resumo do artefato'
+
+# STAGE 2 - CD : atualiza o Azure Container App com a nova imagem
+
+- stage: CD
+  displayName: 'CD - Deploy no Azure Container Apps'
+  dependsOn: CI
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+    - deployment: DeployContainerApp
+      displayName: 'Deploy neocare-api'
+      environment: 'production'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+
+              - script: |
+                  curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+                  az --version
+                displayName: 'Instalar Azure CLI'
+
+              - script: |
+                  az login --service-principal \
+                    -u "$(AZURE_CLIENT_ID)" \
+                    -p "$(AZURE_CLIENT_SECRET)" \
+                    --tenant "$(AZURE_TENANT_ID)"
+                  az account set --subscription "$(AZURE_SUBSCRIPTION_ID)"
+                  az extension add --name containerapp --upgrade
+                displayName: 'Login no Azure (service principal)'
+
+              - script: |
+                  az containerapp update \
+                    --name $(containerAppName) \
+                    --resource-group $(resourceGroup) \
+                    --image $(acrLoginServer)/$(imageRepository):$(imageTag) \
+                    --set-env-vars \
+                      DD_SERVICE=neocare-api \
+                      DD_ENV=prod \
+                      DD_VERSION=$(imageTag) \
+                      DD_SITE=datadoghq.com \
+                      DD_API_KEY=$(DD_API_KEY) \
+                      SPRING_DATASOURCE_URL="$(springDatasourceUrl)" \
+                      SPRING_DATASOURCE_USERNAME="$(springDatasourceUsername)" \
+                      SPRING_DATASOURCE_PASSWORD=$(SPRING_DATASOURCE_PASSWORD)
+                displayName: 'Atualizar Container App com nova imagem'
+
+              - script: |
+                  FQDN=$(az containerapp show \
+                    --name $(containerAppName) \
+                    --resource-group $(resourceGroup) \
+                    --query properties.configuration.ingress.fqdn -o tsv)
+                  echo "Aplicacao disponivel em: https://$FQDN"
+                  echo "Swagger UI:              https://$FQDN/swagger-ui/index.html"
+                displayName: 'Mostrar URL publica do Container App'
+
+              - script: |
+                  az logout
+                displayName: 'Logout Azure'
+                condition: always()
