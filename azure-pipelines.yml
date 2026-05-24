@@ -77,6 +77,28 @@ stages:
               maven
             path: $(HOME)/.m2/repository
 
+        - script: |
+            docker run -d \
+              --name neocare-postgres-ci \
+              -e POSTGRES_USER=postgres \
+              -e POSTGRES_PASSWORD=123456 \
+              -e POSTGRES_DB=neocare \
+              -p 5432:5432 \
+              postgres:16-alpine
+
+            echo "Aguardando Postgres ficar pronto..."
+            for i in $(seq 1 30); do
+              if docker exec neocare-postgres-ci pg_isready -U postgres -d neocare > /dev/null 2>&1; then
+                echo "Postgres pronto apos ${i}s"
+                exit 0
+              fi
+              sleep 1
+            done
+            echo "Postgres nao ficou pronto em 30s"
+            docker logs neocare-postgres-ci
+            exit 1
+          displayName: 'Subir Postgres (sidecar para testes)'
+
         - task: Maven@4
           displayName: 'Rodar testes unitarios (mvn test)'
           inputs:
@@ -87,6 +109,12 @@ stages:
             testResultsFiles: '**/surefire-reports/TEST-*.xml'
             javaHomeOption: 'JDKVersion'
             jdkVersionOption: '1.$(javaVersion)'
+
+        - script: |
+            docker stop neocare-postgres-ci || true
+            docker rm   neocare-postgres-ci || true
+          displayName: 'Parar Postgres (cleanup)'
+          condition: always()
 
         - task: Maven@4
           displayName: 'Empacotar aplicacao (mvn package)'
