@@ -1,8 +1,7 @@
 package com.neocare.api.application.usecase.usuario;
 
+import com.neocare.api.application.exception.EntidadeNaoEncontradaException;
 import com.neocare.api.domain.repository.UsuarioRepository;
-import com.neocare.api.infrastructure.exception.InfraestruturaException;
-import jakarta.persistence.EntityNotFoundException;
 
 public final class DesativarUsuarioUseCaseImpl implements DesativarUsuarioUseCase {
 
@@ -19,7 +18,7 @@ public final class DesativarUsuarioUseCaseImpl implements DesativarUsuarioUseCas
     public void execute(String cpf) {
 
         if (localizarUsuarioUseCase.execute(cpf) == null) {
-            throw new EntityNotFoundException("Usuário não encontrado para desativação");
+            throw new EntidadeNaoEncontradaException("Usuário não encontrado para desativação");
         }
         usuarioRepository.desativar(cpf);
     }

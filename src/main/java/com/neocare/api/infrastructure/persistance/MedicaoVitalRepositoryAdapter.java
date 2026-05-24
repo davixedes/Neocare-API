@@ -6,6 +6,7 @@ import com.neocare.api.domain.repository.MedicaoVitalRepository;
 import com.neocare.api.infrastructure.entity.JpaDispositivoEntity;
 import com.neocare.api.infrastructure.entity.JpaMedicaoVitalEntity;
 import com.neocare.api.infrastructure.entity.JpaUsuarioEntity;
+import com.neocare.api.application.exception.EntidadeNaoEncontradaException;
 import com.neocare.api.infrastructure.exception.InfraestruturaException;
 import com.neocare.api.infrastructure.repository.JpaDispositivoRepository;
 import com.neocare.api.infrastructure.repository.JpaMedicaoVitalRepository;
@@ -31,9 +32,9 @@ public class MedicaoVitalRepositoryAdapter implements MedicaoVitalRepository {
     public MedicaoVital save(MedicaoVital medicaoVital) {
         logger.info("Salvando medição vital no banco de dados.");
         JpaUsuarioEntity usuarioEntity = jpaUsuarioRepository.findById(medicaoVital.getIdUsuario())
-                .orElseThrow(() -> new InfraestruturaException("Usuário com ID " + medicaoVital.getIdUsuario() + " não encontrado."));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Usuário com ID " + medicaoVital.getIdUsuario() + " não encontrado."));
         JpaDispositivoEntity dispositivoEntity = jpaDispositivoRepository.findById(medicaoVital.getIdDispositivo())
-                .orElseThrow(() -> new InfraestruturaException("Dispositivo com ID " + medicaoVital.getIdDispositivo() + " não encontrado."));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Dispositivo com ID " + medicaoVital.getIdDispositivo() + " não encontrado."));
         JpaMedicaoVitalEntity entity = MedicaoVitalMapper.toEntity(medicaoVital, usuarioEntity, dispositivoEntity);
 
         try {

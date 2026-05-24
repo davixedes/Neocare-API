@@ -6,6 +6,7 @@ import com.neocare.api.domain.repository.AlertaRepository;
 import com.neocare.api.infrastructure.entity.JpaAlertaEntity;
 import com.neocare.api.infrastructure.entity.JpaMedicaoEntity;
 import com.neocare.api.infrastructure.entity.JpaUsuarioEntity;
+import com.neocare.api.application.exception.EntidadeNaoEncontradaException;
 import com.neocare.api.infrastructure.exception.InfraestruturaException;
 import com.neocare.api.infrastructure.repository.JpaAlertaRepository;
 import com.neocare.api.infrastructure.repository.JpaMedicaoRepository;
@@ -33,9 +34,9 @@ public class AlertaRepositoryAdapter implements AlertaRepository {
     public Alerta save(Alerta alerta) {
         logger.info("Salvando alerta no banco de dados.");
         JpaUsuarioEntity usuarioEntity = jpaUsuarioRepository.findById(alerta.getUsuarioId())
-                .orElseThrow(() -> new InfraestruturaException("Usuário com ID " + alerta.getUsuarioId() + " não encontrado."));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Usuário com ID " + alerta.getUsuarioId() + " não encontrado."));
         JpaMedicaoEntity medicaoEntity = jpaMedicaoRepository.findById(alerta.getMedicaoId())
-                .orElseThrow(() -> new InfraestruturaException("Medição com ID " + alerta.getMedicaoId() + " não encontrada."));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Medição com ID " + alerta.getMedicaoId() + " não encontrada."));
         JpaAlertaEntity entity = AlertaMapper.toEntity(alerta, usuarioEntity, medicaoEntity);
 
         try {
