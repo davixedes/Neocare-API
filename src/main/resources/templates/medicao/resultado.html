@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head th:replace="~{layout/fragments :: head('Resultado da Análise — Neocare')}"></head>
+<body>
+<nav th:replace="~{layout/fragments :: navbar}"></nav>
+
+<main class="container">
+    <div class="page-header">
+        <h2>Medição Registrada</h2>
+        <div class="page-actions">
+            <a th:href="@{/medicoes-web}" class="btn btn-outline">Voltar para a Lista</a>
+            <a th:if="${tipoMedicao == 'ESTRESSE'}" th:href="@{/medicoes-web/nova-estresse}" class="btn btn-primary">Nova Medição de Estresse</a>
+            <a th:if="${tipoMedicao == 'VITAL'}" th:href="@{/medicoes-web/nova-vital}" class="btn btn-primary">Nova Medição Vital</a>
+        </div>
+    </div>
+
+    <div class="alert alert-success">Medição registrada com sucesso!</div>
+
+    <!-- DADOS DA MEDIÇÃO DE ESTRESSE -->
+    <section th:if="${tipoMedicao == 'ESTRESSE' and medicaoEstresse != null}" class="dashboard-section">
+        <h3>Dados da Medição</h3>
+        <div class="table-wrapper">
+            <table class="data-table">
+                <tbody>
+                <tr>
+                    <th>Data</th>
+                    <td th:text="${#temporals.format(medicaoEstresse.dataMedicao, 'dd/MM/yyyy HH:mm')}"></td>
+                </tr>
+                <tr>
+                    <th>HRV (variação da frequência cardíaca)</th>
+                    <td><span th:text="${medicaoEstresse.variacaoFrequenciaCardiaca}"></span> ms</td>
+                </tr>
+                <tr>
+                    <th>GSR (condutividade da pele)</th>
+                    <td><span th:text="${medicaoEstresse.condutividadePele}"></span> μS</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- DADOS DA MEDIÇÃO VITAL -->
+    <section th:if="${tipoMedicao == 'VITAL' and medicaoVital != null}" class="dashboard-section">
+        <h3>Dados da Medição</h3>
+        <div class="table-wrapper">
+            <table class="data-table">
+                <tbody>
+                <tr>
+                    <th>Data</th>
+                    <td th:text="${#temporals.format(medicaoVital.dataMedicao, 'dd/MM/yyyy HH:mm')}"></td>
+                </tr>
+                <tr>
+                    <th>Batimentos por minuto</th>
+                    <td><span th:text="${medicaoVital.batimentosPorMinuto}"></span> bpm</td>
+                </tr>
+                <tr>
+                    <th>Oxigenação do sangue</th>
+                    <td><span th:text="${medicaoVital.oxigenacaoSangue}"></span> %</td>
+                </tr>
+                <tr th:if="${medicaoVital.pressaoSistolica != null and medicaoVital.pressaoDiastolica != null}">
+                    <th>Pressão arterial</th>
+                    <td><span th:text="${medicaoVital.pressaoSistolica}"></span>/<span th:text="${medicaoVital.pressaoDiastolica}"></span> mmHg</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- RESULTADO DA PREDIÇÃO -->
+    <section class="dashboard-section">
+        <h3>Análise Preditiva (Oracle APEX)</h3>
+        <div th:if="${resultadoPredicao != null}" class="table-wrapper">
+            <table class="data-table">
+                <tbody>
+                <tr>
+                    <th>Predição</th>
+                    <td><strong th:text="${resultadoPredicao.predicao}"></strong></td>
+                </tr>
+                <tr>
+                    <th>Score</th>
+                    <td th:text="${#numbers.formatDecimal(resultadoPredicao.score, 1, 4)}"></td>
+                </tr>
+                <tr>
+                    <th>Analisado em</th>
+                    <td th:text="${#temporals.format(resultadoPredicao.analisadoEm, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:if="${resultadoPredicao == null}" class="empty-state">
+            Não foi possível obter o resultado da análise preditiva neste momento. A medição foi salva normalmente.
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{layout/fragments :: footer}"></footer>
+</body>
+</html>

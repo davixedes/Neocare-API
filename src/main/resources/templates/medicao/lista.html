@@ -30,14 +30,18 @@
                     <th>HRV (ms)</th>
                     <th>GSR (μS)</th>
                     <th>Tipo</th>
+                    <th>Predição</th>
+                    <th>Score</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="m : ${medicoesEstresse}">
+                <tr th:each="m : ${medicoesEstresse}" th:with="pred=${predicoesEstresse?.get(m.id)}">
                     <td th:text="${#temporals.format(m.dataMedicao, 'dd/MM/yyyy HH:mm')}"></td>
                     <td th:text="${m.variacaoFrequenciaCardiaca}"></td>
                     <td th:text="${m.condutividadePele}"></td>
                     <td th:text="${m.tipoMedicao}"></td>
+                    <td th:text="${pred != null ? pred.predicao : '—'}"></td>
+                    <td th:text="${pred != null ? #numbers.formatDecimal(pred.score, 1, 4) : '—'}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -58,14 +62,18 @@
                     <th>BPM</th>
                     <th>SpO2 (%)</th>
                     <th>PA (mmHg)</th>
+                    <th>Predição</th>
+                    <th>Score</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="m : ${medicoesVitais}">
+                <tr th:each="m : ${medicoesVitais}" th:with="pred=${predicoesVitais?.get(m.id)}">
                     <td th:text="${#temporals.format(m.dataMedicao, 'dd/MM/yyyy HH:mm')}"></td>
                     <td th:text="${m.batimentosPorMinuto}"></td>
                     <td th:text="${m.oxigenacaoSangue}"></td>
                     <td th:text="${m.pressaoSistolica != null && m.pressaoDiastolica != null ? m.pressaoSistolica + '/' + m.pressaoDiastolica : '—'}"></td>
+                    <td th:text="${pred != null ? pred.predicao : '—'}"></td>
+                    <td th:text="${pred != null ? #numbers.formatDecimal(pred.score, 1, 4) : '—'}"></td>
                 </tr>
                 </tbody>
             </table>

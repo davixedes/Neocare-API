@@ -33,10 +33,18 @@ public class JpaAlertaEntity {
 
     private LocalDateTime dataNotificacao;
 
+    @Column(name = "lido", nullable = false)
+    private Boolean lido = Boolean.FALSE;
+
     public JpaAlertaEntity() {
     }
 
     public JpaAlertaEntity(JpaUsuarioEntity usuarioEntity, JpaMedicaoEntity medicaoEntity, TipoAlerta tipoAlerta, String valorDetectado, Severidade severidade, String mensagem, LocalDateTime dataNotificacao) {
+        this(null, usuarioEntity, medicaoEntity, tipoAlerta, valorDetectado, severidade, mensagem, dataNotificacao, Boolean.FALSE);
+    }
+
+    public JpaAlertaEntity(Long id, JpaUsuarioEntity usuarioEntity, JpaMedicaoEntity medicaoEntity, TipoAlerta tipoAlerta, String valorDetectado, Severidade severidade, String mensagem, LocalDateTime dataNotificacao, Boolean lido) {
+        this.id = id;
         this.usuarioEntity = usuarioEntity;
         this.medicaoEntity = medicaoEntity;
         this.tipoAlerta = tipoAlerta;
@@ -44,6 +52,7 @@ public class JpaAlertaEntity {
         this.severidade = severidade;
         this.mensagem = mensagem;
         this.dataNotificacao = dataNotificacao;
+        this.lido = lido != null ? lido : Boolean.FALSE;
     }
 
     public Long getId() {
@@ -76,5 +85,13 @@ public class JpaAlertaEntity {
 
     public LocalDateTime getDataNotificacao() {
         return dataNotificacao;
+    }
+
+    public Boolean getLido() {
+        return lido != null ? lido : Boolean.FALSE;
+    }
+
+    public void setLido(Boolean lido) {
+        this.lido = lido;
     }
 }

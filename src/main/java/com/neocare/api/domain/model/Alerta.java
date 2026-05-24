@@ -24,6 +24,8 @@ public class Alerta {
 
     private LocalDateTime dataNotificacao;
 
+    private boolean lido;
+
     public Alerta(Long usuarioId, Long medicaoId, TipoAlerta tipoAlerta, String valorDetectado, Severidade severidade, String mensagem, LocalDateTime dataNotificacao) {
         this.usuarioId = usuarioId;
         this.medicaoId = medicaoId;
@@ -32,9 +34,14 @@ public class Alerta {
         this.severidade = severidade;
         this.mensagem = mensagem;
         this.dataNotificacao = dataNotificacao;
+        this.lido = false;
     }
 
     public Alerta(Long id, Long usuarioId, Long medicaoId, TipoAlerta tipoAlerta, String valorDetectado, Severidade severidade, String mensagem, LocalDateTime dataNotificacao) {
+        this(id, usuarioId, medicaoId, tipoAlerta, valorDetectado, severidade, mensagem, dataNotificacao, false);
+    }
+
+    public Alerta(Long id, Long usuarioId, Long medicaoId, TipoAlerta tipoAlerta, String valorDetectado, Severidade severidade, String mensagem, LocalDateTime dataNotificacao, boolean lido) {
         this.id = id;
         this.usuarioId = usuarioId;
         this.medicaoId = medicaoId;
@@ -43,6 +50,7 @@ public class Alerta {
         this.severidade = severidade;
         this.mensagem = mensagem;
         this.dataNotificacao = dataNotificacao;
+        this.lido = lido;
     }
 
     public static Optional<Alerta> avaliarEstresse(MedicaoEstresse medicao) {
@@ -138,5 +146,43 @@ public class Alerta {
 
     public LocalDateTime getDataNotificacao() {
         return dataNotificacao;
+    }
+
+    public boolean isLido() {
+        return lido;
+    }
+
+    public void marcarComoLido() {
+        this.lido = true;
+    }
+
+    public static Optional<Alerta> avaliarPredicao(ResultadoPredicao resultado, Long usuarioId, TipoAlerta tipoAlerta) {
+        if (resultado == null || resultado.getPredicao() == null || resultado.getScore() == null) {
+            return Optional.empty();
+        }
+        if ("NORMAL".equalsIgnoreCase(resultado.getPredicao())) {
+            return Optional.empty();
+        }
+
+        double score = resultado.getScore();
+        Severidade severidade;
+        if (score >= 0.8) {
+            severidade = Severidade.ALTA;
+        } else if (score >= 0.5) {
+            severidade = Severidade.MODERADA;
+        } else {
+            return Optional.empty();
+        }
+
+        String valor = "Predicao=" + resultado.getPredicao() + " Score=" + score;
+        return Optional.of(new Alerta(
+                usuarioId,
+                resultado.getMedicaoId(),
+                tipoAlerta,
+                valor,
+                severidade,
+                "Análise preditiva indicou risco: " + resultado.getPredicao(),
+                LocalDateTime.now()
+        ));
     }
 }

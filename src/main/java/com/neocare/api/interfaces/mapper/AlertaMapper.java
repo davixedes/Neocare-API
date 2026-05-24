@@ -20,19 +20,22 @@ public final class AlertaMapper {
                 alerta.getValorDetectado(),
                 alerta.getSeveridade(),
                 alerta.getMensagem(),
-                alerta.getDataNotificacao()
+                alerta.getDataNotificacao(),
+                alerta.isLido()
         );
     }
 
     public static JpaAlertaEntity toEntity(Alerta alerta, JpaUsuarioEntity usuarioEntity, JpaMedicaoEntity medicaoEntity) {
         return new JpaAlertaEntity(
+                alerta.getId(),
                 usuarioEntity,
                 medicaoEntity,
                 alerta.getTipoAlerta(),
                 alerta.getValorDetectado(),
                 alerta.getSeveridade(),
                 alerta.getMensagem(),
-                alerta.getDataNotificacao()
+                alerta.getDataNotificacao(),
+                alerta.isLido()
         );
     }
 
@@ -45,7 +48,8 @@ public final class AlertaMapper {
                 entity.getValorDetectado(),
                 entity.getSeveridade(),
                 entity.getMensagem(),
-                entity.getDataNotificacao()
+                entity.getDataNotificacao(),
+                Boolean.TRUE.equals(entity.getLido())
         );
     }
 }

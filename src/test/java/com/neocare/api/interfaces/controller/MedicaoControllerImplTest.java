@@ -1,5 +1,6 @@
 package com.neocare.api.interfaces.controller;
 
+import com.neocare.api.application.usecase.alerta.GerarAlertaPorPredicaoUseCase;
 import com.neocare.api.application.usecase.predicao.AnalisarMedicaoUseCase;
 import com.neocare.api.application.usecase.medicao.estresse.RegistrarMedicaoEstresseUseCase;
 import com.neocare.api.application.usecase.medicao.vital.RegistrarMedicaoVitalUseCase;
@@ -42,6 +43,9 @@ class MedicaoControllerImplTest {
     private AnalisarMedicaoUseCase analisarMedicaoUseCase;
 
     @Mock
+    private GerarAlertaPorPredicaoUseCase gerarAlertaPorPredicaoUseCase;
+
+    @Mock
     private MedicaoOutputAssembler assembler;
 
     private MedicaoControllerImpl controller;
@@ -49,7 +53,8 @@ class MedicaoControllerImplTest {
     @BeforeEach
     void setUp() {
         controller = new MedicaoControllerImpl(
-                registrarMedicaoEstresse, registrarMedicaoVitalUseCase, analisarMedicaoUseCase, assembler
+                registrarMedicaoEstresse, registrarMedicaoVitalUseCase,
+                analisarMedicaoUseCase, gerarAlertaPorPredicaoUseCase, assembler
         );
     }
 

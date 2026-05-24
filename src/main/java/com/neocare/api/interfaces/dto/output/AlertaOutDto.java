@@ -13,6 +13,7 @@ public record AlertaOutDto(
         String valorDetectado,
         Severidade severidade,
         String mensagem,
-        LocalDateTime dataNotificacao
+        LocalDateTime dataNotificacao,
+        boolean lido
 ) {
 }

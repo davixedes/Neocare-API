@@ -8,6 +8,9 @@
 <main class="container">
     <h2 th:text="${isAdmin} ? 'Alertas do Sistema' : 'Meus Alertas'">Alertas</h2>
 
+    <div th:if="${sucesso}" class="alert alert-success" th:text="${sucesso}"></div>
+    <div th:if="${erro}" class="alert alert-danger" th:text="${erro}"></div>
+
     <!-- Alertas -->
     <section class="dashboard-section">
         <div th:if="${#lists.isEmpty(alertas)}" class="empty-state">
@@ -23,6 +26,8 @@
                     <th>Severidade</th>
                     <th>Mensagem</th>
                     <th>Valor Detectado</th>
+                    <th>Status</th>
+                    <th>Ação</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -37,6 +42,17 @@
                     </td>
                     <td th:text="${a.mensagem}"></td>
                     <td th:text="${a.valorDetectado}"></td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${a.lido} ? 'badge-success' : 'badge-info'"
+                              th:text="${a.lido} ? 'Lido' : 'Novo'"></span>
+                    </td>
+                    <td>
+                        <form th:if="${!a.lido}" th:action="@{'/alertas-web/' + ${a.id} + '/marcar-lido'}" method="post" style="margin: 0;">
+                            <button type="submit" class="btn btn-sm btn-primary">Marcar como lido</button>
+                        </form>
+                        <span th:if="${a.lido}">—</span>
+                    </td>
                 </tr>
                 </tbody>
             </table>

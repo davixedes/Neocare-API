@@ -3,6 +3,8 @@ package com.neocare.api.infrastructure.config;
 import com.neocare.api.application.port.PredicaoApexPort;
 import com.neocare.api.application.usecase.predicao.AnalisarMedicaoUseCase;
 import com.neocare.api.application.usecase.predicao.AnalisarMedicaoUseCaseImpl;
+import com.neocare.api.application.usecase.predicao.BuscarPredicoesPorMedicaoIdsUseCase;
+import com.neocare.api.application.usecase.predicao.BuscarPredicoesPorMedicaoIdsUseCaseImpl;
 import com.neocare.api.domain.logging.Logger;
 import com.neocare.api.domain.repository.ResultadoPredicaoRepository;
 import com.neocare.api.infrastructure.client.ApexPredicaoClientAdapter;
@@ -53,5 +55,11 @@ public class ApexPredicaoConfig {
                                                           ResultadoPredicaoRepository resultadoPredicaoRepository) {
         Logger logger = LoggerFactory.getLogger(AnalisarMedicaoUseCaseImpl.class);
         return new AnalisarMedicaoUseCaseImpl(predicaoApexPort, resultadoPredicaoRepository, logger);
+    }
+
+    @Bean
+    public BuscarPredicoesPorMedicaoIdsUseCase buscarPredicoesPorMedicaoIdsUseCase(
+            ResultadoPredicaoRepository resultadoPredicaoRepository) {
+        return new BuscarPredicoesPorMedicaoIdsUseCaseImpl(resultadoPredicaoRepository);
     }
 }

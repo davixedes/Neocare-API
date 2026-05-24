@@ -14,6 +14,7 @@ import com.neocare.api.infrastructure.repository.JpaUsuarioRepository;
 import com.neocare.api.interfaces.mapper.AlertaMapper;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class AlertaRepositoryAdapter implements AlertaRepository {
@@ -65,5 +66,11 @@ public class AlertaRepositoryAdapter implements AlertaRepository {
                 .stream()
                 .map(AlertaMapper::toDomain)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Alerta> findById(Long alertaId) {
+        logger.info("Buscando alerta ID: " + alertaId);
+        return jpaAlertaRepository.findById(alertaId).map(AlertaMapper::toDomain);
     }
 }
