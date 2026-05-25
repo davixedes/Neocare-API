@@ -1,25 +1,13 @@
 package com.neocare.api.interfaces.controller;
 
-import com.neocare.api.interfaces.dto.input.MedicaoEstresseInDto;
+import com.neocare.api.interfaces.dto.input.MedicaoPsicofisiologicaInDto;
 import com.neocare.api.interfaces.dto.input.MedicaoVitalInDto;
-import com.neocare.api.interfaces.dto.output.MedicaoEstresseOutDto;
+import com.neocare.api.interfaces.dto.output.MedicaoPsicofisiologicaOutDto;
 import com.neocare.api.interfaces.dto.output.MedicaoVitalOutDto;
 
 public interface MedicaoController {
 
-    /**
-     * Registra uma nova medição de estresse.
-     *
-     * @param medicaoEstresseInDto Dados de entrada da medição de estresse.
-     * @return Dados de saída da medição de estresse registrada.
-     */
-    MedicaoEstresseOutDto registrarMedicaoEstresse(MedicaoEstresseInDto medicaoEstresseInDto);
+    MedicaoPsicofisiologicaOutDto registrarMedicaoPsicofisiologica(MedicaoPsicofisiologicaInDto inDto);
 
-    /**
-     * Registra uma nova medição vital.
-     *
-     * @param medicaoVitalInDto Dados de entrada da medição vital.
-     * @return Dados de saída da medição vital registrada.
-     */
     MedicaoVitalOutDto registrarMedicaoVital(MedicaoVitalInDto medicaoVitalInDto);
 }

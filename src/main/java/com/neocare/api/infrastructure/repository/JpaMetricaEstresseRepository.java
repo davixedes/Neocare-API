@@ -10,10 +10,10 @@ import java.util.Optional;
 
 public interface JpaMetricaEstresseRepository extends JpaRepository<JpaMetricaEstresseEntity, Long> {
 
-    Optional<JpaMetricaEstresseEntity> findByMedicaoEstresseEntityId(Long medicaoEstresseId);
+    Optional<JpaMetricaEstresseEntity> findByMedicaoPsicofisiologicaEntityId(Long medicaoId);
 
     @Query("SELECT m FROM JpaMetricaEstresseEntity m " +
-           "WHERE m.medicaoEstresseEntity.jpaUsuarioEntity.id = :usuarioId " +
+           "WHERE m.medicaoPsicofisiologicaEntity.jpaUsuarioEntity.id = :usuarioId " +
            "ORDER BY m.dataMetrica DESC")
     List<JpaMetricaEstresseEntity> findByUsuarioId(@Param("usuarioId") Long usuarioId);
 }

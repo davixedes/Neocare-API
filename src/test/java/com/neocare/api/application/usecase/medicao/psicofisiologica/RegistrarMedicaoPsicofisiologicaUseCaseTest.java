@@ -1,11 +1,11 @@
-package com.neocare.api.application.usecase.medicao.estresse;
+package com.neocare.api.application.usecase.medicao.psicofisiologica;
 
 import com.neocare.api.domain.enums.TipoMedicao;
 import com.neocare.api.domain.model.Alerta;
-import com.neocare.api.domain.model.MedicaoEstresse;
+import com.neocare.api.domain.model.MedicaoPsicofisiologica;
 import com.neocare.api.domain.model.MetricaEstresse;
 import com.neocare.api.domain.repository.AlertaRepository;
-import com.neocare.api.domain.repository.MedicaoEstresseRepository;
+import com.neocare.api.domain.repository.MedicaoPsicofisiologicaRepository;
 import com.neocare.api.domain.repository.MetricaEstresseRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,10 +22,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class RegistrarMedicaoEstresseUseCaseTest {
+class RegistrarMedicaoPsicofisiologicaUseCaseTest {
 
     @Mock
-    private MedicaoEstresseRepository medicaoEstresseRepository;
+    private MedicaoPsicofisiologicaRepository medicaoPsicofisiologicaRepository;
 
     @Mock
     private AlertaRepository alertaRepository;
@@ -33,36 +33,36 @@ class RegistrarMedicaoEstresseUseCaseTest {
     @Mock
     private MetricaEstresseRepository metricaEstresseRepository;
 
-    private RegistrarMedicaoEstresseUseCase useCase;
+    private RegistrarMedicaoPsicofisiologicaUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        useCase = new RegistrarMedicaoEstresseUseCaseImpl(medicaoEstresseRepository, alertaRepository, metricaEstresseRepository);
+        useCase = new RegistrarMedicaoPsicofisiologicaUseCaseImpl(medicaoPsicofisiologicaRepository, alertaRepository, metricaEstresseRepository);
     }
 
     @Test
-    @DisplayName("Deve salvar medição de estresse e retornar entidade salva")
+    @DisplayName("Deve salvar medição psicofisiológica e retornar entidade salva")
     void deveSalvarMedicao() {
-        MedicaoEstresse input = new MedicaoEstresse(1L, 1L, TipoMedicao.MEDICAO_ESTRESSE, 50.0, 5.0);
-        MedicaoEstresse salva = new MedicaoEstresse(1L, 1L, 1L, LocalDateTime.now(), TipoMedicao.MEDICAO_ESTRESSE, 50.0, 5.0);
+        MedicaoPsicofisiologica input = new MedicaoPsicofisiologica(1L, 1L, TipoMedicao.MEDICAO_PSICOFISIOLOGICA, 50.0, 5.0);
+        MedicaoPsicofisiologica salva = new MedicaoPsicofisiologica(1L, 1L, 1L, LocalDateTime.now(), TipoMedicao.MEDICAO_PSICOFISIOLOGICA, 50.0, 5.0);
 
-        when(medicaoEstresseRepository.save(input)).thenReturn(salva);
+        when(medicaoPsicofisiologicaRepository.save(input)).thenReturn(salva);
         when(metricaEstresseRepository.save(any(MetricaEstresse.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        MedicaoEstresse resultado = useCase.execute(input);
+        MedicaoPsicofisiologica resultado = useCase.execute(input);
 
         assertNotNull(resultado);
         assertEquals(1L, resultado.getId());
-        verify(medicaoEstresseRepository).save(input);
+        verify(medicaoPsicofisiologicaRepository).save(input);
     }
 
     @Test
     @DisplayName("Não deve gerar alerta quando valores normais")
     void naoDeveGerarAlertaQuandoValoresNormais() {
-        MedicaoEstresse input = new MedicaoEstresse(1L, 1L, TipoMedicao.MEDICAO_ESTRESSE, 50.0, 5.0);
-        MedicaoEstresse salva = new MedicaoEstresse(1L, 1L, 1L, LocalDateTime.now(), TipoMedicao.MEDICAO_ESTRESSE, 50.0, 5.0);
+        MedicaoPsicofisiologica input = new MedicaoPsicofisiologica(1L, 1L, TipoMedicao.MEDICAO_PSICOFISIOLOGICA, 50.0, 5.0);
+        MedicaoPsicofisiologica salva = new MedicaoPsicofisiologica(1L, 1L, 1L, LocalDateTime.now(), TipoMedicao.MEDICAO_PSICOFISIOLOGICA, 50.0, 5.0);
 
-        when(medicaoEstresseRepository.save(input)).thenReturn(salva);
+        when(medicaoPsicofisiologicaRepository.save(input)).thenReturn(salva);
         when(metricaEstresseRepository.save(any(MetricaEstresse.class))).thenAnswer(inv -> inv.getArgument(0));
 
         useCase.execute(input);
@@ -73,10 +73,10 @@ class RegistrarMedicaoEstresseUseCaseTest {
     @Test
     @DisplayName("Deve gerar alerta quando HRV crítico")
     void deveGerarAlertaQuandoHrvCritico() {
-        MedicaoEstresse input = new MedicaoEstresse(1L, 1L, TipoMedicao.MEDICAO_ESTRESSE, 10.0, 5.0);
-        MedicaoEstresse salva = new MedicaoEstresse(1L, 1L, 1L, LocalDateTime.now(), TipoMedicao.MEDICAO_ESTRESSE, 10.0, 5.0);
+        MedicaoPsicofisiologica input = new MedicaoPsicofisiologica(1L, 1L, TipoMedicao.MEDICAO_PSICOFISIOLOGICA, 10.0, 5.0);
+        MedicaoPsicofisiologica salva = new MedicaoPsicofisiologica(1L, 1L, 1L, LocalDateTime.now(), TipoMedicao.MEDICAO_PSICOFISIOLOGICA, 10.0, 5.0);
 
-        when(medicaoEstresseRepository.save(input)).thenReturn(salva);
+        when(medicaoPsicofisiologicaRepository.save(input)).thenReturn(salva);
         when(metricaEstresseRepository.save(any(MetricaEstresse.class))).thenAnswer(inv -> inv.getArgument(0));
 
         useCase.execute(input);
@@ -92,10 +92,10 @@ class RegistrarMedicaoEstresseUseCaseTest {
     @Test
     @DisplayName("Deve gerar alerta quando GSR crítico")
     void deveGerarAlertaQuandoGsrCritico() {
-        MedicaoEstresse input = new MedicaoEstresse(1L, 1L, TipoMedicao.MEDICAO_ESTRESSE, 50.0, 16.0);
-        MedicaoEstresse salva = new MedicaoEstresse(1L, 1L, 1L, LocalDateTime.now(), TipoMedicao.MEDICAO_ESTRESSE, 50.0, 16.0);
+        MedicaoPsicofisiologica input = new MedicaoPsicofisiologica(1L, 1L, TipoMedicao.MEDICAO_PSICOFISIOLOGICA, 50.0, 16.0);
+        MedicaoPsicofisiologica salva = new MedicaoPsicofisiologica(1L, 1L, 1L, LocalDateTime.now(), TipoMedicao.MEDICAO_PSICOFISIOLOGICA, 50.0, 16.0);
 
-        when(medicaoEstresseRepository.save(input)).thenReturn(salva);
+        when(medicaoPsicofisiologicaRepository.save(input)).thenReturn(salva);
         when(metricaEstresseRepository.save(any(MetricaEstresse.class))).thenAnswer(inv -> inv.getArgument(0));
 
         useCase.execute(input);
@@ -106,10 +106,10 @@ class RegistrarMedicaoEstresseUseCaseTest {
     @Test
     @DisplayName("Deve calcular e salvar métrica de estresse ao registrar medição")
     void deveCalcularESalvarMetrica() {
-        MedicaoEstresse input = new MedicaoEstresse(1L, 1L, TipoMedicao.MEDICAO_ESTRESSE, 50.0, 5.0);
-        MedicaoEstresse salva = new MedicaoEstresse(1L, 1L, 1L, LocalDateTime.now(), TipoMedicao.MEDICAO_ESTRESSE, 50.0, 5.0);
+        MedicaoPsicofisiologica input = new MedicaoPsicofisiologica(1L, 1L, TipoMedicao.MEDICAO_PSICOFISIOLOGICA, 50.0, 5.0);
+        MedicaoPsicofisiologica salva = new MedicaoPsicofisiologica(1L, 1L, 1L, LocalDateTime.now(), TipoMedicao.MEDICAO_PSICOFISIOLOGICA, 50.0, 5.0);
 
-        when(medicaoEstresseRepository.save(input)).thenReturn(salva);
+        when(medicaoPsicofisiologicaRepository.save(input)).thenReturn(salva);
         when(metricaEstresseRepository.save(any(MetricaEstresse.class))).thenAnswer(inv -> inv.getArgument(0));
 
         useCase.execute(input);

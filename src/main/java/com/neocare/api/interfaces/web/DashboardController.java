@@ -1,7 +1,7 @@
 package com.neocare.api.interfaces.web;
 
 import com.neocare.api.application.usecase.alerta.ListarAlertasUseCase;
-import com.neocare.api.application.usecase.medicao.estresse.ListarMedicoesEstresseUseCase;
+import com.neocare.api.application.usecase.medicao.psicofisiologica.ListarMedicoesPsicofisiologicasUseCase;
 import com.neocare.api.application.usecase.medicao.vital.ListarMedicoesVitaisUseCase;
 import com.neocare.api.application.usecase.usuario.LocalizarTodosOsUsuariosUseCase;
 import com.neocare.api.application.usecase.usuario.LocalizarUsuarioPorUsernameUseCase;
@@ -15,18 +15,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class DashboardController {
 
     private final LocalizarUsuarioPorUsernameUseCase localizarUsuarioPorUsername;
-    private final ListarMedicoesEstresseUseCase listarMedicoesEstresse;
+    private final ListarMedicoesPsicofisiologicasUseCase listarMedicoesPsicofisiologicas;
     private final ListarMedicoesVitaisUseCase listarMedicoesVitais;
     private final ListarAlertasUseCase listarAlertas;
     private final LocalizarTodosOsUsuariosUseCase localizarTodosOsUsuarios;
 
     public DashboardController(LocalizarUsuarioPorUsernameUseCase localizarUsuarioPorUsername,
-                               ListarMedicoesEstresseUseCase listarMedicoesEstresse,
+                               ListarMedicoesPsicofisiologicasUseCase listarMedicoesPsicofisiologicas,
                                ListarMedicoesVitaisUseCase listarMedicoesVitais,
                                ListarAlertasUseCase listarAlertas,
                                LocalizarTodosOsUsuariosUseCase localizarTodosOsUsuarios) {
         this.localizarUsuarioPorUsername = localizarUsuarioPorUsername;
-        this.listarMedicoesEstresse = listarMedicoesEstresse;
+        this.listarMedicoesPsicofisiologicas = listarMedicoesPsicofisiologicas;
         this.listarMedicoesVitais = listarMedicoesVitais;
         this.listarAlertas = listarAlertas;
         this.localizarTodosOsUsuarios = localizarTodosOsUsuarios;
@@ -46,7 +46,7 @@ public class DashboardController {
         Long usuarioId = usuario.getId();
 
         model.addAttribute("usuario", usuario);
-        model.addAttribute("medicoesEstresse", listarMedicoesEstresse.porUsuario(usuarioId));
+        model.addAttribute("medicoesPsicofisiologicas", listarMedicoesPsicofisiologicas.porUsuario(usuarioId));
         model.addAttribute("medicoesVitais", listarMedicoesVitais.porUsuario(usuarioId));
         model.addAttribute("alertas", listarAlertas.porUsuario(usuarioId));
         return "dashboard/user";

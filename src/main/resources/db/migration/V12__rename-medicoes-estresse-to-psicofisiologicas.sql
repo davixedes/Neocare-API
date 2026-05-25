@@ -1,0 +1,2 @@
+ALTER TABLE medicoes_estresse RENAME TO medicoes_psicofisiologicas;
+ALTER TABLE medicoes_psicofisiologicas RENAME CONSTRAINT fk_estresse_medicao TO fk_psicofisiologica_medicao;

@@ -1,7 +1,7 @@
 package com.neocare.api.infrastructure.client;
 
 import com.neocare.api.application.port.PredicaoApexPort;
-import com.neocare.api.domain.model.MedicaoEstresse;
+import com.neocare.api.domain.model.MedicaoPsicofisiologica;
 import com.neocare.api.domain.model.MedicaoVital;
 import com.neocare.api.domain.model.ResultadoPredicao;
 import org.springframework.http.*;
@@ -22,10 +22,10 @@ public class ApexPredicaoClientAdapter implements PredicaoApexPort {
     }
 
     @Override
-    public ResultadoPredicao analisar(MedicaoEstresse medicao) {
+    public ResultadoPredicao analisar(MedicaoPsicofisiologica medicao) {
         ApexRequest request = new ApexRequest(
                 medicao.getId(),
-                "MEDICAO_ESTRESSE",
+                "MEDICAO_PSICOFISIOLOGICA",
                 medicao.getVariacaoFrequenciaCardiaca(),
                 medicao.getCondutividadePele(),
                 null, null, null, null

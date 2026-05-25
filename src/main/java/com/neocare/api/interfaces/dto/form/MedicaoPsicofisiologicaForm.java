@@ -5,7 +5,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-public class MedicaoEstresseForm {
+public class MedicaoPsicofisiologicaForm {
 
     @NotNull(message = "ID do dispositivo é obrigatório")
     @Positive(message = "ID do dispositivo deve ser positivo")
@@ -21,7 +21,7 @@ public class MedicaoEstresseForm {
     @DecimalMax(value = "50.0", message = "GSR máximo: 50.0 μS")
     private Double condutividadePele;
 
-    public MedicaoEstresseForm() {
+    public MedicaoPsicofisiologicaForm() {
     }
 
     public Long getIdDispositivo() {

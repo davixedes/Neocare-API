@@ -1,13 +1,13 @@
 package com.neocare.api.infrastructure.api.rest;
 
-import com.neocare.api.application.usecase.medicao.estresse.ListarMedicoesEstresseUseCase;
+import com.neocare.api.application.usecase.medicao.psicofisiologica.ListarMedicoesPsicofisiologicasUseCase;
 import com.neocare.api.application.usecase.medicao.vital.ListarMedicoesVitaisUseCase;
 import com.neocare.api.interfaces.controller.MedicaoController;
-import com.neocare.api.interfaces.dto.input.MedicaoEstresseInDto;
+import com.neocare.api.interfaces.dto.input.MedicaoPsicofisiologicaInDto;
 import com.neocare.api.interfaces.dto.input.MedicaoVitalInDto;
-import com.neocare.api.interfaces.dto.output.MedicaoEstresseOutDto;
+import com.neocare.api.interfaces.dto.output.MedicaoPsicofisiologicaOutDto;
 import com.neocare.api.interfaces.dto.output.MedicaoVitalOutDto;
-import com.neocare.api.domain.model.MedicaoEstresse;
+import com.neocare.api.domain.model.MedicaoPsicofisiologica;
 import com.neocare.api.domain.model.MedicaoVital;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -27,22 +27,22 @@ import java.util.List;
 public class MedicaoRestController {
 
     private final MedicaoController medicaoController;
-    private final ListarMedicoesEstresseUseCase listarMedicoesEstresseUseCase;
+    private final ListarMedicoesPsicofisiologicasUseCase listarMedicoesPsicofisiologicasUseCase;
     private final ListarMedicoesVitaisUseCase listarMedicoesVitaisUseCase;
 
     public MedicaoRestController(MedicaoController medicaoController,
-                                 ListarMedicoesEstresseUseCase listarMedicoesEstresseUseCase,
+                                 ListarMedicoesPsicofisiologicasUseCase listarMedicoesPsicofisiologicasUseCase,
                                  ListarMedicoesVitaisUseCase listarMedicoesVitaisUseCase) {
         this.medicaoController = medicaoController;
-        this.listarMedicoesEstresseUseCase = listarMedicoesEstresseUseCase;
+        this.listarMedicoesPsicofisiologicasUseCase = listarMedicoesPsicofisiologicasUseCase;
         this.listarMedicoesVitaisUseCase = listarMedicoesVitaisUseCase;
     }
 
-    @PostMapping("/medicao_estresse")
-    public ResponseEntity<MedicaoEstresseOutDto> registrarMedicaoEstresse(@Valid @RequestBody MedicaoEstresseInDto medicaoEstresseInDto, UriComponentsBuilder uriComponentsBuilder){
-        final MedicaoEstresseOutDto medicaoEstresseOutDto = medicaoController.registrarMedicaoEstresse(medicaoEstresseInDto);
-        URI uri = uriComponentsBuilder.path("/medicoes/medicao_estresse/{id}").buildAndExpand(medicaoEstresseOutDto.getMedicaoOutDto().getId()).toUri();
-        return ResponseEntity.created(uri).body(medicaoEstresseOutDto);
+    @PostMapping("/medicao_psicofisiologica")
+    public ResponseEntity<MedicaoPsicofisiologicaOutDto> registrarMedicaoPsicofisiologica(@Valid @RequestBody MedicaoPsicofisiologicaInDto inDto, UriComponentsBuilder uriComponentsBuilder){
+        final MedicaoPsicofisiologicaOutDto outDto = medicaoController.registrarMedicaoPsicofisiologica(inDto);
+        URI uri = uriComponentsBuilder.path("/medicoes/medicao_psicofisiologica/{id}").buildAndExpand(outDto.getMedicaoOutDto().getId()).toUri();
+        return ResponseEntity.created(uri).body(outDto);
     }
 
     @PostMapping("/medicao_vital")
@@ -52,9 +52,9 @@ public class MedicaoRestController {
         return ResponseEntity.created(uri).body(medicaoVitalOutDto);
     }
 
-    @GetMapping("/estresse/usuario/{usuarioId}")
-    public ResponseEntity<List<MedicaoEstresse>> listarMedicoesEstresse(@PathVariable Long usuarioId) {
-        List<MedicaoEstresse> medicoes = listarMedicoesEstresseUseCase.porUsuario(usuarioId);
+    @GetMapping("/psicofisiologicas/usuario/{usuarioId}")
+    public ResponseEntity<List<MedicaoPsicofisiologica>> listarMedicoesPsicofisiologicas(@PathVariable Long usuarioId) {
+        List<MedicaoPsicofisiologica> medicoes = listarMedicoesPsicofisiologicasUseCase.porUsuario(usuarioId);
         return ResponseEntity.ok(medicoes);
     }
 

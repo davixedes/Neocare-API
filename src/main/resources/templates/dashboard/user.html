@@ -12,8 +12,8 @@
     <!-- Cards resumo -->
     <div class="dashboard-cards">
         <div class="card card-info">
-            <span class="card-label">Medições de Estresse</span>
-            <span class="card-value" th:text="${#lists.size(medicoesEstresse)}">0</span>
+            <span class="card-label">Medições Psicofisiológicas</span>
+            <span class="card-value" th:text="${#lists.size(medicoesPsicofisiologicas)}">0</span>
         </div>
         <div class="card card-success">
             <span class="card-label">Medições Vitais</span>
@@ -25,13 +25,13 @@
         </div>
     </div>
 
-    <!-- Medições de Estresse -->
+    <!-- Medições Psicofisiológicas -->
     <section class="dashboard-section">
-        <h3>Medições de Estresse</h3>
-        <div th:if="${#lists.isEmpty(medicoesEstresse)}" class="empty-state">
-            Nenhuma medição de estresse registrada.
+        <h3>Medições Psicofisiológicas</h3>
+        <div th:if="${#lists.isEmpty(medicoesPsicofisiologicas)}" class="empty-state">
+            Nenhuma medição psicofisiológica registrada.
         </div>
-        <div th:unless="${#lists.isEmpty(medicoesEstresse)}" class="table-wrapper">
+        <div th:unless="${#lists.isEmpty(medicoesPsicofisiologicas)}" class="table-wrapper">
             <table class="data-table">
                 <thead>
                 <tr>
@@ -41,7 +41,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="m : ${medicoesEstresse}">
+                <tr th:each="m : ${medicoesPsicofisiologicas}">
                     <td th:text="${#temporals.format(m.dataMedicao, 'dd/MM/yyyy HH:mm')}"></td>
                     <td th:text="${m.variacaoFrequenciaCardiaca}"></td>
                     <td th:text="${m.condutividadePele}"></td>

@@ -28,9 +28,9 @@ public class DatabaseConfig {
     }
 
     @Bean
-    public MedicaoEstresseRepository medicaoEstresseRepository (JpaMedicaoEstresseRepository jpaMedicaoEstresseRepository, JpaUsuarioRepository jpaUsuarioRepository, JpaDispositivoRepository jpaDispositivoRepository) {
-        final Logger logger = LoggerFactory.getLogger(DispositivoRepositoryAdapter.class);
-        return new MedicaoEstresseRepositoryAdapter(jpaMedicaoEstresseRepository, jpaUsuarioRepository, jpaDispositivoRepository, logger);
+    public MedicaoPsicofisiologicaRepository medicaoPsicofisiologicaRepository(JpaMedicaoPsicofisiologicaRepository jpaMedicaoPsicofisiologicaRepository, JpaUsuarioRepository jpaUsuarioRepository, JpaDispositivoRepository jpaDispositivoRepository) {
+        final Logger logger = LoggerFactory.getLogger(MedicaoPsicofisiologicaRepositoryAdapter.class);
+        return new MedicaoPsicofisiologicaRepositoryAdapter(jpaMedicaoPsicofisiologicaRepository, jpaUsuarioRepository, jpaDispositivoRepository, logger);
     }
 
     @Bean public CredenciaisRepository credenciaisRepository(JpaCredenciaisRepository jpaCredenciaisRepository) {
@@ -57,8 +57,8 @@ public class DatabaseConfig {
     }
 
     @Bean
-    public MetricaEstresseRepository metricaEstresseRepository(JpaMetricaEstresseRepository jpaMetricaEstresseRepository, JpaMedicaoEstresseRepository jpaMedicaoEstresseRepository) {
+    public MetricaEstresseRepository metricaEstresseRepository(JpaMetricaEstresseRepository jpaMetricaEstresseRepository, JpaMedicaoPsicofisiologicaRepository jpaMedicaoPsicofisiologicaRepository) {
         final Logger logger = LoggerFactory.getLogger(MetricaEstresseRepositoryAdapter.class);
-        return new MetricaEstresseRepositoryAdapter(jpaMetricaEstresseRepository, jpaMedicaoEstresseRepository, logger);
+        return new MetricaEstresseRepositoryAdapter(jpaMetricaEstresseRepository, jpaMedicaoPsicofisiologicaRepository, logger);
     }
 }

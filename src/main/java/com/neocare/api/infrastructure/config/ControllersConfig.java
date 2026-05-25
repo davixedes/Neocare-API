@@ -3,7 +3,7 @@ package com.neocare.api.infrastructure.config;
 import com.neocare.api.application.usecase.alerta.GerarAlertaPorPredicaoUseCase;
 import com.neocare.api.application.usecase.dispositivo.LocalizarDispositivoUseCase;
 import com.neocare.api.application.usecase.predicao.AnalisarMedicaoUseCase;
-import com.neocare.api.application.usecase.medicao.estresse.RegistrarMedicaoEstresseUseCase;
+import com.neocare.api.application.usecase.medicao.psicofisiologica.RegistrarMedicaoPsicofisiologicaUseCase;
 import com.neocare.api.application.usecase.medicao.vital.RegistrarMedicaoVitalUseCase;
 import com.neocare.api.application.usecase.usuario.*;
 import com.neocare.api.infrastructure.security.JwtUtil;
@@ -37,14 +37,14 @@ public class ControllersConfig {
 
     @Bean
     public MedicaoController medicaoController(
-            RegistrarMedicaoEstresseUseCase registrarMedicaoEstresseUseCase,
+            RegistrarMedicaoPsicofisiologicaUseCase registrarMedicaoPsicofisiologicaUseCase,
             RegistrarMedicaoVitalUseCase registrarMedicaoVitalUseCase,
             AnalisarMedicaoUseCase analisarMedicaoUseCase,
             GerarAlertaPorPredicaoUseCase gerarAlertaPorPredicaoUseCase,
             MedicaoOutputAssembler medicaoOutputAssembler
     ) {
         return new MedicaoControllerImpl(
-                registrarMedicaoEstresseUseCase, registrarMedicaoVitalUseCase,
+                registrarMedicaoPsicofisiologicaUseCase, registrarMedicaoVitalUseCase,
                 analisarMedicaoUseCase, gerarAlertaPorPredicaoUseCase, medicaoOutputAssembler
         );
     }

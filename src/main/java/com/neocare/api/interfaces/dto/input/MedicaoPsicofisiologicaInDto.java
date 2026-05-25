@@ -6,7 +6,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-public record MedicaoEstresseInDto(
+public record MedicaoPsicofisiologicaInDto(
         @NotNull(message = "ID do usuário é obrigatório")
         @Positive(message = "ID do usuário deve ser positivo")
         Long idUsuario,

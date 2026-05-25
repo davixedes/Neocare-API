@@ -1,13 +1,13 @@
 package com.neocare.api.interfaces.dto.output;
 
-public class MedicaoEstresseOutDto {
+public class MedicaoPsicofisiologicaOutDto {
     private Double variacaoFrequenciaCardiaca;
     private Double condutividadePele;
     private MedicaoOutDto medicaoOutDto;
     private ResultadoPredicaoOutDto resultadoPredicao;
 
-    public MedicaoEstresseOutDto(Double variacaoFrequenciaCardiaca, Double condutividadePele,
-                                 MedicaoOutDto medicaoOutDto, ResultadoPredicaoOutDto resultadoPredicao) {
+    public MedicaoPsicofisiologicaOutDto(Double variacaoFrequenciaCardiaca, Double condutividadePele,
+                                          MedicaoOutDto medicaoOutDto, ResultadoPredicaoOutDto resultadoPredicao) {
         this.variacaoFrequenciaCardiaca = variacaoFrequenciaCardiaca;
         this.condutividadePele = condutividadePele;
         this.medicaoOutDto = medicaoOutDto;

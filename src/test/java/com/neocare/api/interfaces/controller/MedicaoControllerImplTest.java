@@ -2,17 +2,17 @@ package com.neocare.api.interfaces.controller;
 
 import com.neocare.api.application.usecase.alerta.GerarAlertaPorPredicaoUseCase;
 import com.neocare.api.application.usecase.predicao.AnalisarMedicaoUseCase;
-import com.neocare.api.application.usecase.medicao.estresse.RegistrarMedicaoEstresseUseCase;
+import com.neocare.api.application.usecase.medicao.psicofisiologica.RegistrarMedicaoPsicofisiologicaUseCase;
 import com.neocare.api.application.usecase.medicao.vital.RegistrarMedicaoVitalUseCase;
 import com.neocare.api.domain.enums.TipoDispositivo;
 import com.neocare.api.domain.enums.TipoMedicao;
-import com.neocare.api.domain.model.MedicaoEstresse;
+import com.neocare.api.domain.model.MedicaoPsicofisiologica;
 import com.neocare.api.domain.model.MedicaoVital;
 import com.neocare.api.interfaces.assembler.MedicaoOutputAssembler;
-import com.neocare.api.interfaces.dto.input.MedicaoEstresseInDto;
+import com.neocare.api.interfaces.dto.input.MedicaoPsicofisiologicaInDto;
 import com.neocare.api.interfaces.dto.input.MedicaoVitalInDto;
 import com.neocare.api.interfaces.dto.output.DispositivoMedicaoOutDto;
-import com.neocare.api.interfaces.dto.output.MedicaoEstresseOutDto;
+import com.neocare.api.interfaces.dto.output.MedicaoPsicofisiologicaOutDto;
 import com.neocare.api.interfaces.dto.output.MedicaoOutDto;
 import com.neocare.api.interfaces.dto.output.MedicaoVitalOutDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 class MedicaoControllerImplTest {
 
     @Mock
-    private RegistrarMedicaoEstresseUseCase registrarMedicaoEstresse;
+    private RegistrarMedicaoPsicofisiologicaUseCase registrarMedicaoPsicofisiologica;
 
     @Mock
     private RegistrarMedicaoVitalUseCase registrarMedicaoVitalUseCase;
@@ -53,26 +53,26 @@ class MedicaoControllerImplTest {
     @BeforeEach
     void setUp() {
         controller = new MedicaoControllerImpl(
-                registrarMedicaoEstresse, registrarMedicaoVitalUseCase,
+                registrarMedicaoPsicofisiologica, registrarMedicaoVitalUseCase,
                 analisarMedicaoUseCase, gerarAlertaPorPredicaoUseCase, assembler
         );
     }
 
     @Test
-    @DisplayName("Deve registrar medição de estresse com orquestração correta")
-    void deveRegistrarMedicaoEstresse() {
-        MedicaoEstresseInDto inDto = new MedicaoEstresseInDto(1L, 1L, TipoMedicao.MEDICAO_ESTRESSE, 50.0, 5.0);
-        MedicaoEstresse salva = new MedicaoEstresse(1L, 1L, 1L, LocalDateTime.now(), TipoMedicao.MEDICAO_ESTRESSE, 50.0, 5.0);
+    @DisplayName("Deve registrar medição psicofisiológica com orquestração correta")
+    void deveRegistrarMedicaoPsicofisiologica() {
+        MedicaoPsicofisiologicaInDto inDto = new MedicaoPsicofisiologicaInDto(1L, 1L, TipoMedicao.MEDICAO_PSICOFISIOLOGICA, 50.0, 5.0);
+        MedicaoPsicofisiologica salva = new MedicaoPsicofisiologica(1L, 1L, 1L, LocalDateTime.now(), TipoMedicao.MEDICAO_PSICOFISIOLOGICA, 50.0, 5.0);
 
         DispositivoMedicaoOutDto dispositivoDto = new DispositivoMedicaoOutDto(1L, TipoDispositivo.ESP32, "A4:CF:12:45:AE:CC", true);
-        MedicaoOutDto medicaoOutDto = new MedicaoOutDto(1L, "João", dispositivoDto, salva.getDataMedicao(), TipoMedicao.MEDICAO_ESTRESSE);
-        MedicaoEstresseOutDto expectedOutDto = new MedicaoEstresseOutDto(50.0, 5.0, medicaoOutDto, null);
+        MedicaoOutDto medicaoOutDto = new MedicaoOutDto(1L, "João", dispositivoDto, salva.getDataMedicao(), TipoMedicao.MEDICAO_PSICOFISIOLOGICA);
+        MedicaoPsicofisiologicaOutDto expectedOutDto = new MedicaoPsicofisiologicaOutDto(50.0, 5.0, medicaoOutDto, null);
 
-        when(registrarMedicaoEstresse.execute(any(MedicaoEstresse.class))).thenReturn(salva);
-        when(analisarMedicaoUseCase.executarParaEstresse(salva)).thenReturn(Optional.empty());
-        when(assembler.toEstresseOutDto(salva, null)).thenReturn(expectedOutDto);
+        when(registrarMedicaoPsicofisiologica.execute(any(MedicaoPsicofisiologica.class))).thenReturn(salva);
+        when(analisarMedicaoUseCase.executarParaPsicofisiologica(salva)).thenReturn(Optional.empty());
+        when(assembler.toPsicofisiologicaOutDto(salva, null)).thenReturn(expectedOutDto);
 
-        MedicaoEstresseOutDto resultado = controller.registrarMedicaoEstresse(inDto);
+        MedicaoPsicofisiologicaOutDto resultado = controller.registrarMedicaoPsicofisiologica(inDto);
 
         assertNotNull(resultado);
         assertEquals(50.0, resultado.getVariacaoFrequenciaCardiaca());
@@ -80,9 +80,9 @@ class MedicaoControllerImplTest {
         assertNotNull(resultado.getMedicaoOutDto());
         assertEquals("João", resultado.getMedicaoOutDto().getNomeUsuario());
 
-        verify(registrarMedicaoEstresse).execute(any(MedicaoEstresse.class));
-        verify(analisarMedicaoUseCase).executarParaEstresse(salva);
-        verify(assembler).toEstresseOutDto(salva, null);
+        verify(registrarMedicaoPsicofisiologica).execute(any(MedicaoPsicofisiologica.class));
+        verify(analisarMedicaoUseCase).executarParaPsicofisiologica(salva);
+        verify(assembler).toPsicofisiologicaOutDto(salva, null);
     }
 
     @Test

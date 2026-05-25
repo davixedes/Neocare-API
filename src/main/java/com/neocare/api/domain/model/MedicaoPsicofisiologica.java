@@ -5,21 +5,21 @@ import com.neocare.api.domain.exception.ValidacaoDominioException;
 
 import java.time.LocalDateTime;
 
-public class MedicaoEstresse extends Medicao {
+public class MedicaoPsicofisiologica extends Medicao {
 
     private Double variacaoFrequenciaCardiaca;
     private Double condutividadePele;
 
-    public MedicaoEstresse(Long idUsuario, Long idDispositivo, TipoMedicao tipoMedicao,
-                           Double variacaoFrequenciaCardiaca, Double condutividadePele) {
+    public MedicaoPsicofisiologica(Long idUsuario, Long idDispositivo, TipoMedicao tipoMedicao,
+                                    Double variacaoFrequenciaCardiaca, Double condutividadePele) {
         super(idUsuario, idDispositivo, tipoMedicao);
         validar(variacaoFrequenciaCardiaca, condutividadePele);
         this.variacaoFrequenciaCardiaca = variacaoFrequenciaCardiaca;
         this.condutividadePele = condutividadePele;
     }
 
-    public MedicaoEstresse(Long id, Long idUsuario, Long idDispositivo, LocalDateTime dataMedicao,
-                           TipoMedicao tipoMedicao, Double variacaoFrequenciaCardiaca, Double condutividadePele) {
+    public MedicaoPsicofisiologica(Long id, Long idUsuario, Long idDispositivo, LocalDateTime dataMedicao,
+                                    TipoMedicao tipoMedicao, Double variacaoFrequenciaCardiaca, Double condutividadePele) {
         super(id, idUsuario, idDispositivo, dataMedicao, tipoMedicao);
         validar(variacaoFrequenciaCardiaca, condutividadePele);
         this.variacaoFrequenciaCardiaca = variacaoFrequenciaCardiaca;

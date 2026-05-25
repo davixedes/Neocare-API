@@ -10,30 +10,30 @@
         <h2>Medição Registrada</h2>
         <div class="page-actions">
             <a th:href="@{/medicoes-web}" class="btn btn-outline">Voltar para a Lista</a>
-            <a th:if="${tipoMedicao == 'ESTRESSE'}" th:href="@{/medicoes-web/nova-estresse}" class="btn btn-primary">Nova Medição de Estresse</a>
+            <a th:if="${tipoMedicao == 'PSICOFISIOLOGICA'}" th:href="@{/medicoes-web/nova-psicofisiologica}" class="btn btn-primary">Nova Medição Psicofisiológica</a>
             <a th:if="${tipoMedicao == 'VITAL'}" th:href="@{/medicoes-web/nova-vital}" class="btn btn-primary">Nova Medição Vital</a>
         </div>
     </div>
 
     <div class="alert alert-success">Medição registrada com sucesso!</div>
 
-    <!-- DADOS DA MEDIÇÃO DE ESTRESSE -->
-    <section th:if="${tipoMedicao == 'ESTRESSE' and medicaoEstresse != null}" class="dashboard-section">
+    <!-- DADOS DA MEDIÇÃO PSICOFISIOLÓGICA -->
+    <section th:if="${tipoMedicao == 'PSICOFISIOLOGICA' and medicaoPsicofisiologica != null}" class="dashboard-section">
         <h3>Dados da Medição</h3>
         <div class="table-wrapper">
             <table class="data-table">
                 <tbody>
                 <tr>
                     <th>Data</th>
-                    <td th:text="${#temporals.format(medicaoEstresse.dataMedicao, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${#temporals.format(medicaoPsicofisiologica.dataMedicao, 'dd/MM/yyyy HH:mm')}"></td>
                 </tr>
                 <tr>
                     <th>HRV (variação da frequência cardíaca)</th>
-                    <td><span th:text="${medicaoEstresse.variacaoFrequenciaCardiaca}"></span> ms</td>
+                    <td><span th:text="${medicaoPsicofisiologica.variacaoFrequenciaCardiaca}"></span> ms</td>
                 </tr>
                 <tr>
                     <th>GSR (condutividade da pele)</th>
-                    <td><span th:text="${medicaoEstresse.condutividadePele}"></span> μS</td>
+                    <td><span th:text="${medicaoPsicofisiologica.condutividadePele}"></span> μS</td>
                 </tr>
                 </tbody>
             </table>

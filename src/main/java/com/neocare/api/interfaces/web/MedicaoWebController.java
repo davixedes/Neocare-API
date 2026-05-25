@@ -1,21 +1,21 @@
 package com.neocare.api.interfaces.web;
 
 import com.neocare.api.application.usecase.alerta.GerarAlertaPorPredicaoUseCase;
-import com.neocare.api.application.usecase.medicao.estresse.ListarMedicoesEstresseUseCase;
-import com.neocare.api.application.usecase.medicao.estresse.RegistrarMedicaoEstresseUseCase;
+import com.neocare.api.application.usecase.medicao.psicofisiologica.ListarMedicoesPsicofisiologicasUseCase;
+import com.neocare.api.application.usecase.medicao.psicofisiologica.RegistrarMedicaoPsicofisiologicaUseCase;
 import com.neocare.api.application.usecase.medicao.vital.ListarMedicoesVitaisUseCase;
 import com.neocare.api.application.usecase.medicao.vital.RegistrarMedicaoVitalUseCase;
 import com.neocare.api.application.usecase.predicao.AnalisarMedicaoUseCase;
 import com.neocare.api.application.usecase.predicao.BuscarPredicoesPorMedicaoIdsUseCase;
 import com.neocare.api.application.usecase.usuario.LocalizarUsuarioPorUsernameUseCase;
 import com.neocare.api.domain.enums.TipoAlerta;
-import com.neocare.api.domain.model.MedicaoEstresse;
+import com.neocare.api.domain.model.MedicaoPsicofisiologica;
 import com.neocare.api.domain.model.MedicaoVital;
 import com.neocare.api.domain.model.ResultadoPredicao;
 import com.neocare.api.domain.model.Usuario;
-import com.neocare.api.interfaces.dto.form.MedicaoEstresseForm;
+import com.neocare.api.interfaces.dto.form.MedicaoPsicofisiologicaForm;
 import com.neocare.api.interfaces.dto.form.MedicaoVitalForm;
-import com.neocare.api.interfaces.mapper.MedicaoEstresseMapper;
+import com.neocare.api.interfaces.mapper.MedicaoPsicofisiologicaMapper;
 import com.neocare.api.interfaces.mapper.MedicaoVitalMapper;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -38,26 +38,26 @@ public class MedicaoWebController {
 
     private static final Logger log = LoggerFactory.getLogger(MedicaoWebController.class);
 
-    private final ListarMedicoesEstresseUseCase listarMedicoesEstresse;
+    private final ListarMedicoesPsicofisiologicasUseCase listarMedicoesPsicofisiologicas;
     private final ListarMedicoesVitaisUseCase listarMedicoesVitais;
-    private final RegistrarMedicaoEstresseUseCase registrarMedicaoEstresse;
+    private final RegistrarMedicaoPsicofisiologicaUseCase registrarMedicaoPsicofisiologica;
     private final RegistrarMedicaoVitalUseCase registrarMedicaoVital;
     private final LocalizarUsuarioPorUsernameUseCase localizarUsuarioPorUsername;
     private final AnalisarMedicaoUseCase analisarMedicaoUseCase;
     private final GerarAlertaPorPredicaoUseCase gerarAlertaPorPredicaoUseCase;
     private final BuscarPredicoesPorMedicaoIdsUseCase buscarPredicoesPorMedicaoIds;
 
-    public MedicaoWebController(ListarMedicoesEstresseUseCase listarMedicoesEstresse,
+    public MedicaoWebController(ListarMedicoesPsicofisiologicasUseCase listarMedicoesPsicofisiologicas,
                                 ListarMedicoesVitaisUseCase listarMedicoesVitais,
-                                RegistrarMedicaoEstresseUseCase registrarMedicaoEstresse,
+                                RegistrarMedicaoPsicofisiologicaUseCase registrarMedicaoPsicofisiologica,
                                 RegistrarMedicaoVitalUseCase registrarMedicaoVital,
                                 LocalizarUsuarioPorUsernameUseCase localizarUsuarioPorUsername,
                                 AnalisarMedicaoUseCase analisarMedicaoUseCase,
                                 GerarAlertaPorPredicaoUseCase gerarAlertaPorPredicaoUseCase,
                                 BuscarPredicoesPorMedicaoIdsUseCase buscarPredicoesPorMedicaoIds) {
-        this.listarMedicoesEstresse = listarMedicoesEstresse;
+        this.listarMedicoesPsicofisiologicas = listarMedicoesPsicofisiologicas;
         this.listarMedicoesVitais = listarMedicoesVitais;
-        this.registrarMedicaoEstresse = registrarMedicaoEstresse;
+        this.registrarMedicaoPsicofisiologica = registrarMedicaoPsicofisiologica;
         this.registrarMedicaoVital = registrarMedicaoVital;
         this.localizarUsuarioPorUsername = localizarUsuarioPorUsername;
         this.analisarMedicaoUseCase = analisarMedicaoUseCase;
@@ -70,50 +70,50 @@ public class MedicaoWebController {
         Usuario usuario = localizarUsuarioPorUsername.execute(authentication.getName());
         Long usuarioId = usuario.getId();
 
-        List<MedicaoEstresse> medicoesEstresse = listarMedicoesEstresse.porUsuario(usuarioId);
+        List<MedicaoPsicofisiologica> medicoesPsicofisiologicas = listarMedicoesPsicofisiologicas.porUsuario(usuarioId);
         List<MedicaoVital> medicoesVitais = listarMedicoesVitais.porUsuario(usuarioId);
 
         model.addAttribute("usuario", usuario);
-        model.addAttribute("medicoesEstresse", medicoesEstresse);
+        model.addAttribute("medicoesPsicofisiologicas", medicoesPsicofisiologicas);
         model.addAttribute("medicoesVitais", medicoesVitais);
-        model.addAttribute("predicoesEstresse",
-                buscarPredicoesPorMedicaoIds.execute(medicoesEstresse.stream().map(MedicaoEstresse::getId).toList()));
+        model.addAttribute("predicoesPsicofisiologicas",
+                buscarPredicoesPorMedicaoIds.execute(medicoesPsicofisiologicas.stream().map(MedicaoPsicofisiologica::getId).toList()));
         model.addAttribute("predicoesVitais",
                 buscarPredicoesPorMedicaoIds.execute(medicoesVitais.stream().map(MedicaoVital::getId).toList()));
         return "medicao/lista";
     }
 
-    @GetMapping("/nova-estresse")
-    public String formEstresse(Model model) {
-        model.addAttribute("medicaoEstresseForm", new MedicaoEstresseForm());
-        return "medicao/form-estresse";
+    @GetMapping("/nova-psicofisiologica")
+    public String formPsicofisiologica(Model model) {
+        model.addAttribute("medicaoPsicofisiologicaForm", new MedicaoPsicofisiologicaForm());
+        return "medicao/form-psicofisiologica";
     }
 
-    @PostMapping("/nova-estresse")
-    public String registrarEstresse(@Valid @ModelAttribute("medicaoEstresseForm") MedicaoEstresseForm form,
-                                    BindingResult result,
-                                    Authentication authentication,
-                                    Model model,
-                                    RedirectAttributes redirectAttributes) {
+    @PostMapping("/nova-psicofisiologica")
+    public String registrarPsicofisiologica(@Valid @ModelAttribute("medicaoPsicofisiologicaForm") MedicaoPsicofisiologicaForm form,
+                                            BindingResult result,
+                                            Authentication authentication,
+                                            Model model,
+                                            RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            return "medicao/form-estresse";
+            return "medicao/form-psicofisiologica";
         }
 
         try {
             Usuario usuario = localizarUsuarioPorUsername.execute(authentication.getName());
-            MedicaoEstresse salva = registrarMedicaoEstresse.execute(MedicaoEstresseMapper.fromForm(form, usuario.getId()));
-            ResultadoPredicao resultado = analisarMedicaoUseCase.executarParaEstresse(salva).orElse(null);
+            MedicaoPsicofisiologica salva = registrarMedicaoPsicofisiologica.execute(MedicaoPsicofisiologicaMapper.fromForm(form, usuario.getId()));
+            ResultadoPredicao resultado = analisarMedicaoUseCase.executarParaPsicofisiologica(salva).orElse(null);
             if (resultado != null) {
                 gerarAlertaPorPredicaoUseCase.execute(resultado, salva.getIdUsuario(), TipoAlerta.ESTRESSE);
             }
-            redirectAttributes.addFlashAttribute("medicaoEstresse", salva);
+            redirectAttributes.addFlashAttribute("medicaoPsicofisiologica", salva);
             redirectAttributes.addFlashAttribute("resultadoPredicao", resultado);
-            redirectAttributes.addFlashAttribute("tipoMedicao", "ESTRESSE");
+            redirectAttributes.addFlashAttribute("tipoMedicao", "PSICOFISIOLOGICA");
             return "redirect:/medicoes-web/resultado";
         } catch (Exception e) {
-            log.warn("Erro ao registrar medição de estresse: {}", e.getMessage());
-            model.addAttribute("erro", "Não foi possível registrar a medição de estresse. Verifique os dados e tente novamente.");
-            return "medicao/form-estresse";
+            log.warn("Erro ao registrar medição psicofisiológica: {}", e.getMessage());
+            model.addAttribute("erro", "Não foi possível registrar a medição psicofisiológica. Verifique os dados e tente novamente.");
+            return "medicao/form-psicofisiologica";
         }
     }
 

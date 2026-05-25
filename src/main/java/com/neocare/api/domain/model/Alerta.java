@@ -53,7 +53,7 @@ public class Alerta {
         this.lido = lido;
     }
 
-    public static Optional<Alerta> avaliarEstresse(MedicaoEstresse medicao) {
+    public static Optional<Alerta> avaliarPsicofisiologica(MedicaoPsicofisiologica medicao) {
         Double hrv = medicao.getVariacaoFrequenciaCardiaca();
         Double gsr = medicao.getCondutividadePele();
 

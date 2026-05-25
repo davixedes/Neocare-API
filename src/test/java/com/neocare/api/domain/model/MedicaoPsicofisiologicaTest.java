@@ -8,26 +8,26 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MedicaoEstresseTest {
+class MedicaoPsicofisiologicaTest {
 
     @Test
-    @DisplayName("Deve criar medição de estresse com construtor básico")
-    void deveCriarMedicaoEstresseBasica() {
-        MedicaoEstresse medicao = new MedicaoEstresse(1L, 1L, TipoMedicao.MEDICAO_ESTRESSE, 50.0, 5.0);
+    @DisplayName("Deve criar medição psicofisiológica com construtor básico")
+    void deveCriarMedicaoBasica() {
+        MedicaoPsicofisiologica medicao = new MedicaoPsicofisiologica(1L, 1L, TipoMedicao.MEDICAO_PSICOFISIOLOGICA, 50.0, 5.0);
 
         assertEquals(1L, medicao.getIdUsuario());
         assertEquals(1L, medicao.getIdDispositivo());
-        assertEquals(TipoMedicao.MEDICAO_ESTRESSE, medicao.getTipoMedicao());
+        assertEquals(TipoMedicao.MEDICAO_PSICOFISIOLOGICA, medicao.getTipoMedicao());
         assertEquals(50.0, medicao.getVariacaoFrequenciaCardiaca());
         assertEquals(5.0, medicao.getCondutividadePele());
         assertNotNull(medicao.getDataMedicao());
     }
 
     @Test
-    @DisplayName("Deve criar medição de estresse com construtor completo")
-    void deveCriarMedicaoEstresseCompleta() {
+    @DisplayName("Deve criar medição psicofisiológica com construtor completo")
+    void deveCriarMedicaoCompleta() {
         LocalDateTime agora = LocalDateTime.now();
-        MedicaoEstresse medicao = new MedicaoEstresse(1L, 1L, 1L, agora, TipoMedicao.MEDICAO_ESTRESSE, 50.0, 5.0);
+        MedicaoPsicofisiologica medicao = new MedicaoPsicofisiologica(1L, 1L, 1L, agora, TipoMedicao.MEDICAO_PSICOFISIOLOGICA, 50.0, 5.0);
 
         assertEquals(1L, medicao.getId());
         assertEquals(1L, medicao.getIdUsuario());
@@ -37,7 +37,7 @@ class MedicaoEstresseTest {
     @Test
     @DisplayName("Deve permitir valores nulos para HRV e GSR")
     void devePermitirValoresNulos() {
-        MedicaoEstresse medicao = new MedicaoEstresse(1L, 1L, TipoMedicao.MEDICAO_ESTRESSE, null, null);
+        MedicaoPsicofisiologica medicao = new MedicaoPsicofisiologica(1L, 1L, TipoMedicao.MEDICAO_PSICOFISIOLOGICA, null, null);
 
         assertNull(medicao.getVariacaoFrequenciaCardiaca());
         assertNull(medicao.getCondutividadePele());
@@ -46,7 +46,7 @@ class MedicaoEstresseTest {
     @Test
     @DisplayName("Deve alterar valores com setters")
     void deveAlterarComSetters() {
-        MedicaoEstresse medicao = new MedicaoEstresse(1L, 1L, TipoMedicao.MEDICAO_ESTRESSE, 50.0, 5.0);
+        MedicaoPsicofisiologica medicao = new MedicaoPsicofisiologica(1L, 1L, TipoMedicao.MEDICAO_PSICOFISIOLOGICA, 50.0, 5.0);
         medicao.setVariacaoFrequenciaCardiaca(30.0);
         medicao.setCondutividadePele(8.0);
 

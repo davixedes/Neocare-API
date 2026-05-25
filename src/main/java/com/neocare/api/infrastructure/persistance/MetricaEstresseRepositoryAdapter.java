@@ -3,10 +3,10 @@ package com.neocare.api.infrastructure.persistance;
 import com.neocare.api.domain.logging.Logger;
 import com.neocare.api.domain.model.MetricaEstresse;
 import com.neocare.api.domain.repository.MetricaEstresseRepository;
-import com.neocare.api.infrastructure.entity.JpaMedicaoEstresseEntity;
+import com.neocare.api.infrastructure.entity.JpaMedicaoPsicofisiologicaEntity;
 import com.neocare.api.infrastructure.entity.JpaMetricaEstresseEntity;
 import com.neocare.api.infrastructure.exception.InfraestruturaException;
-import com.neocare.api.infrastructure.repository.JpaMedicaoEstresseRepository;
+import com.neocare.api.infrastructure.repository.JpaMedicaoPsicofisiologicaRepository;
 import com.neocare.api.infrastructure.repository.JpaMetricaEstresseRepository;
 import com.neocare.api.interfaces.mapper.MetricaEstresseMapper;
 
@@ -17,24 +17,24 @@ import java.util.stream.Collectors;
 public class MetricaEstresseRepositoryAdapter implements MetricaEstresseRepository {
 
     private final JpaMetricaEstresseRepository jpaMetricaEstresseRepository;
-    private final JpaMedicaoEstresseRepository jpaMedicaoEstresseRepository;
+    private final JpaMedicaoPsicofisiologicaRepository jpaMedicaoPsicofisiologicaRepository;
     private final Logger logger;
 
     public MetricaEstresseRepositoryAdapter(JpaMetricaEstresseRepository jpaMetricaEstresseRepository,
-                                            JpaMedicaoEstresseRepository jpaMedicaoEstresseRepository,
+                                            JpaMedicaoPsicofisiologicaRepository jpaMedicaoPsicofisiologicaRepository,
                                             Logger logger) {
         this.jpaMetricaEstresseRepository = jpaMetricaEstresseRepository;
-        this.jpaMedicaoEstresseRepository = jpaMedicaoEstresseRepository;
+        this.jpaMedicaoPsicofisiologicaRepository = jpaMedicaoPsicofisiologicaRepository;
         this.logger = logger;
     }
 
     @Override
     public MetricaEstresse save(MetricaEstresse metricaEstresse) {
         logger.info("Salvando métrica de estresse para medição ID: " + metricaEstresse.getMedicaoEstresseId());
-        JpaMedicaoEstresseEntity medicaoEntity = jpaMedicaoEstresseRepository
+        JpaMedicaoPsicofisiologicaEntity medicaoEntity = jpaMedicaoPsicofisiologicaRepository
                 .findById(metricaEstresse.getMedicaoEstresseId())
                 .orElseThrow(() -> new InfraestruturaException(
-                        "Medição de estresse com ID " + metricaEstresse.getMedicaoEstresseId() + " não encontrada."));
+                        "Medição psicofisiológica com ID " + metricaEstresse.getMedicaoEstresseId() + " não encontrada."));
 
         JpaMetricaEstresseEntity entity = MetricaEstresseMapper.toEntity(metricaEstresse, medicaoEntity);
 
@@ -50,7 +50,7 @@ public class MetricaEstresseRepositoryAdapter implements MetricaEstresseReposito
 
     @Override
     public Optional<MetricaEstresse> findByMedicaoEstresseId(Long medicaoEstresseId) {
-        return jpaMetricaEstresseRepository.findByMedicaoEstresseEntityId(medicaoEstresseId)
+        return jpaMetricaEstresseRepository.findByMedicaoPsicofisiologicaEntityId(medicaoEstresseId)
                 .map(MetricaEstresseMapper::toDomain);
     }
 

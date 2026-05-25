@@ -9,20 +9,20 @@
     <div class="page-header">
         <h2>Minhas Medições</h2>
         <div class="page-actions">
-            <a th:href="@{/medicoes-web/nova-estresse}" class="btn btn-primary">Nova Medição de Estresse</a>
+            <a th:href="@{/medicoes-web/nova-psicofisiologica}" class="btn btn-primary">Nova Medição Psicofisiológica</a>
             <a th:href="@{/medicoes-web/nova-vital}" class="btn btn-primary">Nova Medição Vital</a>
         </div>
     </div>
 
     <div th:if="${sucesso}" class="alert alert-success" th:text="${sucesso}"></div>
 
-    <!-- Medições de Estresse -->
+    <!-- Medições Psicofisiológicas -->
     <section class="dashboard-section">
-        <h3>Medições de Estresse</h3>
-        <div th:if="${#lists.isEmpty(medicoesEstresse)}" class="empty-state">
-            Nenhuma medição de estresse registrada.
+        <h3>Medições Psicofisiológicas</h3>
+        <div th:if="${#lists.isEmpty(medicoesPsicofisiologicas)}" class="empty-state">
+            Nenhuma medição psicofisiológica registrada.
         </div>
-        <div th:unless="${#lists.isEmpty(medicoesEstresse)}" class="table-wrapper">
+        <div th:unless="${#lists.isEmpty(medicoesPsicofisiologicas)}" class="table-wrapper">
             <table class="data-table">
                 <thead>
                 <tr>
@@ -35,7 +35,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="m : ${medicoesEstresse}" th:with="pred=${predicoesEstresse?.get(m.id)}">
+                <tr th:each="m : ${medicoesPsicofisiologicas}" th:with="pred=${predicoesPsicofisiologicas?.get(m.id)}">
                     <td th:text="${#temporals.format(m.dataMedicao, 'dd/MM/yyyy HH:mm')}"></td>
                     <td th:text="${m.variacaoFrequenciaCardiaca}"></td>
                     <td th:text="${m.condutividadePele}"></td>

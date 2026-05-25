@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-<head th:replace="~{layout/fragments :: head('Nova Medição de Estresse — Neocare')}"></head>
+<head th:replace="~{layout/fragments :: head('Nova Medição Psicofisiológica — Neocare')}"></head>
 <body>
 <nav th:replace="~{layout/fragments :: navbar}"></nav>
 
 <main class="container">
-    <h2>Nova Medição de Estresse</h2>
+    <h2>Nova Medição Psicofisiológica</h2>
 
     <div th:if="${erro}" class="alert alert-danger" th:text="${erro}"></div>
 
-    <form th:action="@{/medicoes-web/nova-estresse}" th:object="${medicaoEstresseForm}" method="post" class="auth-form">
+    <form th:action="@{/medicoes-web/nova-psicofisiologica}" th:object="${medicaoPsicofisiologicaForm}" method="post" class="auth-form">
 
         <div class="form-group">
             <label for="idDispositivo">ID do Dispositivo</label>

@@ -3,14 +3,14 @@ package com.neocare.api.interfaces.assembler;
 import com.neocare.api.application.usecase.dispositivo.LocalizarDispositivoUseCase;
 import com.neocare.api.application.usecase.usuario.LocalizarUsuarioPorIdUseCase;
 import com.neocare.api.domain.model.Dispositivo;
-import com.neocare.api.domain.model.MedicaoEstresse;
+import com.neocare.api.domain.model.MedicaoPsicofisiologica;
 import com.neocare.api.domain.model.MedicaoVital;
 import com.neocare.api.domain.model.ResultadoPredicao;
 import com.neocare.api.domain.model.Usuario;
-import com.neocare.api.interfaces.dto.output.MedicaoEstresseOutDto;
+import com.neocare.api.interfaces.dto.output.MedicaoPsicofisiologicaOutDto;
 import com.neocare.api.interfaces.dto.output.MedicaoVitalOutDto;
 import com.neocare.api.interfaces.dto.output.ResultadoPredicaoOutDto;
-import com.neocare.api.interfaces.mapper.MedicaoEstresseMapper;
+import com.neocare.api.interfaces.mapper.MedicaoPsicofisiologicaMapper;
 import com.neocare.api.interfaces.mapper.MedicaoVitalMapper;
 
 public final class MedicaoOutputAssembler {
@@ -24,13 +24,13 @@ public final class MedicaoOutputAssembler {
         this.localizarDispositivo = localizarDispositivo;
     }
 
-    public MedicaoEstresseOutDto toEstresseOutDto(MedicaoEstresse medicao, ResultadoPredicao resultadoPredicao) {
+    public MedicaoPsicofisiologicaOutDto toPsicofisiologicaOutDto(MedicaoPsicofisiologica medicao, ResultadoPredicao resultadoPredicao) {
         Usuario usuario = localizarUsuarioPorId.execute(medicao.getIdUsuario());
         Dispositivo dispositivo = localizarDispositivo.execute(medicao.getIdDispositivo());
         ResultadoPredicaoOutDto resultadoPredicaoOutDto = resultadoPredicao != null
                 ? new ResultadoPredicaoOutDto(resultadoPredicao.getScore(), resultadoPredicao.getPredicao(), resultadoPredicao.getAnalisadoEm())
                 : null;
-        return MedicaoEstresseMapper.toOutDto(medicao, usuario.getNome(), dispositivo, medicao.getIdDispositivo(), resultadoPredicaoOutDto);
+        return MedicaoPsicofisiologicaMapper.toOutDto(medicao, usuario.getNome(), dispositivo, medicao.getIdDispositivo(), resultadoPredicaoOutDto);
     }
 
     public MedicaoVitalOutDto toVitalOutDto(MedicaoVital medicao, ResultadoPredicao resultadoPredicao) {

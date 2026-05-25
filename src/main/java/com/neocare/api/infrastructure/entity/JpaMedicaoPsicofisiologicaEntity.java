@@ -7,19 +7,19 @@ import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 
-@Table(name = "medicoes_estresse")
+@Table(name = "medicoes_psicofisiologicas")
 @Entity
 @PrimaryKeyJoinColumn(name = "medicao_id")
-public class JpaMedicaoEstresseEntity extends JpaMedicaoEntity{
+public class JpaMedicaoPsicofisiologicaEntity extends JpaMedicaoEntity {
 
     private Double variacaoFrequenciaCardiaca;
 
     private Double condutividadePele;
 
-    public JpaMedicaoEstresseEntity() {
+    public JpaMedicaoPsicofisiologicaEntity() {
     }
 
-    public JpaMedicaoEstresseEntity(JpaUsuarioEntity jpaUsuarioEntity, JpaDispositivoEntity jpaDispositivoEntity, LocalDateTime dataMedicao, TipoMedicao tipoMedicao, Double variacaoFrequenciaCardiaca, Double condutividadePele) {
+    public JpaMedicaoPsicofisiologicaEntity(JpaUsuarioEntity jpaUsuarioEntity, JpaDispositivoEntity jpaDispositivoEntity, LocalDateTime dataMedicao, TipoMedicao tipoMedicao, Double variacaoFrequenciaCardiaca, Double condutividadePele) {
         super(jpaUsuarioEntity, jpaDispositivoEntity, dataMedicao, tipoMedicao);
         this.variacaoFrequenciaCardiaca = variacaoFrequenciaCardiaca;
         this.condutividadePele = condutividadePele;

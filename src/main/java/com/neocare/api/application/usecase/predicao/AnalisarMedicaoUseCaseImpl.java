@@ -2,7 +2,7 @@ package com.neocare.api.application.usecase.predicao;
 
 import com.neocare.api.application.port.PredicaoApexPort;
 import com.neocare.api.domain.logging.Logger;
-import com.neocare.api.domain.model.MedicaoEstresse;
+import com.neocare.api.domain.model.MedicaoPsicofisiologica;
 import com.neocare.api.domain.model.MedicaoVital;
 import com.neocare.api.domain.model.ResultadoPredicao;
 import com.neocare.api.domain.repository.ResultadoPredicaoRepository;
@@ -24,15 +24,15 @@ public final class AnalisarMedicaoUseCaseImpl implements AnalisarMedicaoUseCase 
     }
 
     @Override
-    public Optional<ResultadoPredicao> executarParaEstresse(MedicaoEstresse medicao) {
+    public Optional<ResultadoPredicao> executarParaPsicofisiologica(MedicaoPsicofisiologica medicao) {
         try {
-            logger.info("Enviando medição de estresse ID " + medicao.getId() + " para análise no Oracle APEX.");
+            logger.info("Enviando medição psicofisiológica ID " + medicao.getId() + " para análise no Oracle APEX.");
             ResultadoPredicao resultado = predicaoApexPort.analisar(medicao);
             ResultadoPredicao salvo = resultadoPredicaoRepository.salvar(resultado);
             logger.info("Resultado de predição salvo. Predição: " + salvo.getPredicao() + " | Score: " + salvo.getScore());
             return Optional.of(salvo);
         } catch (Exception e) {
-            logger.error("Falha ao analisar medição de estresse no APEX. Medição registrada sem resultado de predição. Erro: " + e.getMessage(), e);
+            logger.error("Falha ao analisar medição psicofisiológica no APEX. Medição registrada sem resultado de predição. Erro: " + e.getMessage(), e);
             return Optional.empty();
         }
     }

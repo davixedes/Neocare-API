@@ -15,7 +15,7 @@ public class JpaMetricaEstresseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "medicao_estresse_id", nullable = false, unique = true)
-    private JpaMedicaoEstresseEntity medicaoEstresseEntity;
+    private JpaMedicaoPsicofisiologicaEntity medicaoPsicofisiologicaEntity;
 
     @Column(name = "indice_estresse", nullable = false)
     private Integer indiceEstresse;
@@ -30,8 +30,8 @@ public class JpaMetricaEstresseEntity {
     public JpaMetricaEstresseEntity() {
     }
 
-    public JpaMetricaEstresseEntity(JpaMedicaoEstresseEntity medicaoEstresseEntity, Integer indiceEstresse, Categoria categoria, LocalDateTime dataMetrica) {
-        this.medicaoEstresseEntity = medicaoEstresseEntity;
+    public JpaMetricaEstresseEntity(JpaMedicaoPsicofisiologicaEntity medicaoPsicofisiologicaEntity, Integer indiceEstresse, Categoria categoria, LocalDateTime dataMetrica) {
+        this.medicaoPsicofisiologicaEntity = medicaoPsicofisiologicaEntity;
         this.indiceEstresse = indiceEstresse;
         this.categoria = categoria;
         this.dataMetrica = dataMetrica;
@@ -41,12 +41,12 @@ public class JpaMetricaEstresseEntity {
         return id;
     }
 
-    public JpaMedicaoEstresseEntity getMedicaoEstresseEntity() {
-        return medicaoEstresseEntity;
+    public JpaMedicaoPsicofisiologicaEntity getMedicaoPsicofisiologicaEntity() {
+        return medicaoPsicofisiologicaEntity;
     }
 
-    public void setMedicaoEstresseEntity(JpaMedicaoEstresseEntity medicaoEstresseEntity) {
-        this.medicaoEstresseEntity = medicaoEstresseEntity;
+    public void setMedicaoPsicofisiologicaEntity(JpaMedicaoPsicofisiologicaEntity medicaoPsicofisiologicaEntity) {
+        this.medicaoPsicofisiologicaEntity = medicaoPsicofisiologicaEntity;
     }
 
     public Integer getIndiceEstresse() {
