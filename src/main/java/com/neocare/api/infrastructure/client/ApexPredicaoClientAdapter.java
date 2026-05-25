@@ -32,10 +32,9 @@ public class ApexPredicaoClientAdapter implements PredicaoApexPort {
 
     @Override
     public ResultadoPredicao analisar(MedicaoPsicofisiologica medicao) {
-        // Discriminador no formato esperado pelo endpoint ORDS do APEX (mantido por compatibilidade do contrato de wire).
         ApexRequest request = new ApexRequest(
                 medicao.getId(),
-                "MEDICAO_ESTRESSE",
+                "MEDICAO_PSICOFISIOLOGICA",
                 medicao.getVariacaoFrequenciaCardiaca(),
                 medicao.getCondutividadePele(),
                 null, null, null, null
