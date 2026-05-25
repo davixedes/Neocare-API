@@ -1,5 +1,6 @@
 package com.neocare.api.infrastructure.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neocare.api.application.port.PredicaoApexPort;
 import com.neocare.api.application.usecase.predicao.AnalisarMedicaoUseCase;
 import com.neocare.api.application.usecase.predicao.AnalisarMedicaoUseCaseImpl;
@@ -40,8 +41,8 @@ public class ApexPredicaoConfig {
     }
 
     @Bean
-    public PredicaoApexPort predicaoApexPort(RestTemplate apexRestTemplate) {
-        return new ApexPredicaoClientAdapter(apexRestTemplate, apexUrl, apiKey);
+    public PredicaoApexPort predicaoApexPort(RestTemplate apexRestTemplate, ObjectMapper objectMapper) {
+        return new ApexPredicaoClientAdapter(apexRestTemplate, objectMapper, apexUrl, apiKey);
     }
 
     @Bean
